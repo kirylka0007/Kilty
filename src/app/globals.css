@@ -1,26 +1,55 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-black: #0A0A0A;
+  --color-charcoal: #1C1C1E;
+  --color-grey-dark: #3A3A3C;
+  --color-grey-mid: #6E6E73;
+  --color-grey-light: #D1D1D6;
+  --color-off-white: #F5F5F7;
+  --color-white: #FFFFFF;
+
+  --font-heading: var(--font-space-grotesk);
+  --font-body: var(--font-inter);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/*
+ * Base reset MUST be inside @layer base so it doesn't override
+ * Tailwind utility classes (px-*, py-*, mx-*, etc.).
+ * Tailwind v4 already includes a preflight/reset, so we only
+ * add the extras we actually need here.
+ */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
   }
-}
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  body {
+    background: var(--color-white);
+    color: var(--color-black);
+    font-family: var(--font-body), system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading), system-ui, sans-serif;
+  }
+
+  /* FAQ summary styling */
+  details summary {
+    cursor: pointer;
+    list-style: none;
+  }
+
+  details summary::-webkit-details-marker {
+    display: none;
+  }
+
+  /* Dialog backdrop */
+  dialog::backdrop {
+    background: rgba(0, 0, 0, 0.9);
+  }
 }
