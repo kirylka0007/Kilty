@@ -18,7 +18,7 @@ export interface DbRegistration {
   telegram: string | null;
   instagram: string | null;
   telephone: string | null;
-  payment_status: "pending" | "paid" | "failed" | "refunded";
+  payment_status: "paid" | "refunded";
   stripe_session_id: string;
 }
 

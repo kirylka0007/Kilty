@@ -30,19 +30,18 @@ export async function POST(request: Request) {
   switch (event.type) {
     case "checkout.session.completed": {
       const session = event.data.object as Stripe.Checkout.Session;
-      await supabaseAdmin
-        .from("registrations")
-        .update({ payment_status: "paid" })
-        .eq("stripe_session_id", session.id);
-      break;
-    }
+      const meta = session.metadata || {};
 
-    case "checkout.session.expired": {
-      const session = event.data.object as Stripe.Checkout.Session;
-      await supabaseAdmin
-        .from("registrations")
-        .update({ payment_status: "failed" })
-        .eq("stripe_session_id", session.id);
+      await supabaseAdmin.from("registrations").insert({
+        event_id: meta.event_id,
+        full_name: meta.full_name,
+        email: meta.email,
+        telegram: meta.telegram || null,
+        instagram: meta.instagram || null,
+        telephone: meta.telephone || null,
+        payment_status: "paid",
+        stripe_session_id: session.id,
+      });
       break;
     }
   }

@@ -38,13 +38,13 @@ export async function createRegistration(
     return { success: false, error: "Sorry, this event is sold out." };
   }
 
-  // Check for duplicate registration
+  // Check for duplicate registration (only paid registrations exist now)
   const { data: existing } = await supabaseAdmin
     .from("registrations")
     .select("id")
     .eq("event_id", eventId)
     .eq("email", email)
-    .in("payment_status", ["pending", "paid"])
+    .eq("payment_status", "paid")
     .maybeSingle();
 
   if (existing) {
@@ -85,26 +85,11 @@ export async function createRegistration(
       event_id: eventId,
       full_name: formData.fullName.trim(),
       email,
+      telegram: formData.telegram.trim() || "",
+      instagram: formData.instagram.trim() || "",
+      telephone: formData.telephone.trim() || "",
     },
   });
-
-  // Insert registration with pending status
-  const { error: insertError } = await supabaseAdmin
-    .from("registrations")
-    .insert({
-      event_id: eventId,
-      full_name: formData.fullName.trim(),
-      email,
-      telegram: formData.telegram.trim() || null,
-      instagram: formData.instagram.trim() || null,
-      telephone: formData.telephone.trim() || null,
-      payment_status: "pending",
-      stripe_session_id: session.id,
-    });
-
-  if (insertError) {
-    return { success: false, error: "Something went wrong. Please try again." };
-  }
 
   return { success: true, checkoutUrl: session.url! };
 }

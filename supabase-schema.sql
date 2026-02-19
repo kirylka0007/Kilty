@@ -31,8 +31,8 @@ create table registrations (
   telegram          text,
   instagram         text,
   telephone         text,
-  payment_status    text not null default 'pending'
-                    check (payment_status in ('pending', 'paid', 'failed', 'refunded')),
+  payment_status    text not null default 'paid'
+                    check (payment_status in ('paid', 'refunded')),
   stripe_session_id text unique not null,
   created_at        timestamptz not null default now()
 );
@@ -46,8 +46,7 @@ create index idx_registrations_stripe_session
   on registrations (stripe_session_id);
 
 -- 4. Event availability view
--- Counts both 'pending' and 'paid' registrations to prevent
--- overbooking while a user is on the Stripe checkout page.
+-- Counts only 'paid' registrations (rows are only created after payment).
 create or replace view event_availability as
 select
   e.*,
@@ -59,7 +58,7 @@ left join (
     event_id,
     count(*) as registration_count
   from registrations
-  where payment_status in ('pending', 'paid')
+  where payment_status = 'paid'
   group by event_id
 ) r on r.event_id = e.id;
 
