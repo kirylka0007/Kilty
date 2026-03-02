@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { supabaseAdmin } from "@/lib/supabase/server";
+import { sendConfirmationEmail } from "@/lib/email";
 import type Stripe from "stripe";
 
 export async function POST(request: Request) {
@@ -49,6 +50,28 @@ export async function POST(request: Request) {
             console.log("Duplicate webhook event, already processed:", session.id);
           } else {
             console.error("Supabase insert error:", error);
+          }
+        } else {
+          // Fetch event details for the confirmation email
+          const { data: eventData } = await supabaseAdmin
+            .from("events")
+            .select("city, date, time, venue, language, price_pence")
+            .eq("id", meta.event_id)
+            .single();
+
+          if (eventData) {
+            await sendConfirmationEmail({
+              to: meta.email,
+              fullName: meta.full_name,
+              city: eventData.city,
+              date: eventData.date,
+              time: eventData.time,
+              venue: eventData.venue,
+              language: eventData.language,
+              pricePence: eventData.price_pence,
+            }).catch((err) => {
+              console.error("Failed to send confirmation email:", err);
+            });
           }
         }
       } catch (err) {
