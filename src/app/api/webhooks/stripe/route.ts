@@ -32,16 +32,28 @@ export async function POST(request: Request) {
       const session = event.data.object as Stripe.Checkout.Session;
       const meta = session.metadata || {};
 
-      await supabaseAdmin.from("registrations").insert({
-        event_id: meta.event_id,
-        full_name: meta.full_name,
-        email: meta.email,
-        telegram: meta.telegram || null,
-        instagram: meta.instagram || null,
-        telephone: meta.telephone || null,
-        payment_status: "paid",
-        stripe_session_id: session.id,
-      });
+      try {
+        const { error } = await supabaseAdmin.from("registrations").insert({
+          event_id: meta.event_id,
+          full_name: meta.full_name,
+          email: meta.email,
+          telegram: meta.telegram || null,
+          instagram: meta.instagram || null,
+          telephone: meta.telephone || null,
+          payment_status: "paid",
+          stripe_session_id: session.id,
+        });
+
+        if (error) {
+          if (error.code === "23505") {
+            console.log("Duplicate webhook event, already processed:", session.id);
+          } else {
+            console.error("Supabase insert error:", error);
+          }
+        }
+      } catch (err) {
+        console.error("Unexpected error processing webhook:", err);
+      }
       break;
     }
   }
