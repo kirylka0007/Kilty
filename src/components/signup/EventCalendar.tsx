@@ -179,7 +179,7 @@ export default function EventCalendar({
                 {selectedEvent.venue}
               </p>
               <span className="mt-1.5 inline-block rounded-full bg-black px-2.5 py-0.5 text-xs font-semibold text-white">
-                {selectedEvent.language === "Russian" ? "🇷🇺 Russian" : "🇬🇧 English"}
+                {selectedEvent.language === "Russian" ? "🇷🇺 Game in Russian" : "🇬🇧 Game in English"}
               </span>
             </div>
             <SpotsBadge
