@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import type { EventWithAvailability, RegistrationFormData } from "@/types";
 import { validateRegistration, hasErrors } from "@/lib/validators";
 import type { ValidationErrors } from "@/lib/validators";
@@ -25,6 +26,8 @@ export default function RegistrationForm({
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [submitting, setSubmitting] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [termsError, setTermsError] = useState(false);
 
   function handleChange(field: keyof RegistrationFormData, value: string) {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -41,6 +44,11 @@ export default function RegistrationForm({
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setServerError(null);
+
+    if (!termsAccepted) {
+      setTermsError(true);
+      return;
+    }
 
     const validationErrors = validateRegistration(formData);
     if (hasErrors(validationErrors)) {
@@ -193,6 +201,36 @@ export default function RegistrationForm({
               <p className="mt-1 text-xs text-red-500">{errors.telephone}</p>
             )}
           </div>
+        </div>
+
+        {/* T&Cs checkbox */}
+        <div className="mt-5">
+          <label className="flex items-start gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={termsAccepted}
+              onChange={(e) => {
+                setTermsAccepted(e.target.checked);
+                if (e.target.checked) setTermsError(false);
+              }}
+              className="mt-0.5 h-4 w-4 shrink-0 accent-black"
+            />
+            <span className="text-sm text-grey-dark">
+              I have read and agree to the{" "}
+              <Link
+                href="/terms"
+                target="_blank"
+                className="font-semibold text-black underline underline-offset-2 hover:opacity-70"
+              >
+                Terms &amp; Conditions
+              </Link>
+            </span>
+          </label>
+          {termsError && (
+            <p className="mt-1.5 text-xs text-red-500">
+              You must accept the Terms &amp; Conditions to continue.
+            </p>
+          )}
         </div>
 
         {serverError && (

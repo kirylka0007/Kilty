@@ -39,7 +39,7 @@ export const faqItems: FAQItem[] = [
   {
     question: "Are tickets refundable?",
     answer:
-      "Tickets are non-refundable. However, if you let us know at least 24 hours before the event, the game host may be able to transfer your ticket to a future date at their discretion — though this isn't guaranteed.",
+      "A full refund is available if you cancel more than 5 days before the event. Within 5 days of the event, tickets are non-refundable. If you can no longer attend, let us know and we may be able to transfer your ticket to a future date at the host's discretion.",
   },
   {
     question: "How do I book?",
