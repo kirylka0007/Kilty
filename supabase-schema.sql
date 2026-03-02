@@ -17,10 +17,16 @@ create table events (
   total_spots integer not null default 20,
   price_pence integer not null default 2000,
   is_published boolean not null default false,
+  language    text not null default 'English' check (language in ('English', 'Russian')),
   created_at  timestamptz not null default now(),
 
   unique (city, date)
 );
+
+-- Note: if you already have an events table without the language column, run:
+-- ALTER TABLE events ADD COLUMN language text NOT NULL DEFAULT 'English'
+--   CHECK (language IN ('English', 'Russian'));
+-- Then recreate the view (DROP VIEW event_availability; CREATE VIEW ...);
 
 -- 3. Registrations table
 create table registrations (
@@ -87,16 +93,16 @@ create policy "Public can read published events"
 -- Sample test events (delete or modify as needed)
 -- ============================================================
 
-insert into events (city, date, time, venue, description, total_spots, price_pence, is_published)
+insert into events (city, date, time, venue, description, total_spots, price_pence, is_published, language)
 values
   ('Edinburgh', current_date + interval '14 days', '19:00', 'The Voodoo Rooms',
    'An evening of social deduction in the heart of Edinburgh. Masks provided, drinks available at the bar.',
-   20, 2000, true),
+   20, 2000, true, 'English'),
 
   ('Edinburgh', current_date + interval '28 days', '19:00', 'The Voodoo Rooms',
    'Our second Edinburgh night this month. Beginners welcome!',
-   20, 2000, true),
+   20, 1500, true, 'Russian'),
 
   ('Glasgow', current_date + interval '21 days', '19:00', 'The Butterfly and the Pig',
    'Mafia Kilty comes to Glasgow. Expect bluffing, laughter, and a few betrayals.',
-   20, 2000, true);
+   20, 2000, true, 'English');
