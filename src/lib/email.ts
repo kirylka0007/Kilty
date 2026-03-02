@@ -103,8 +103,7 @@ export async function sendConfirmationEmail(params: ConfirmationEmailParams) {
               </h2>
               <p style="margin:0 0 28px;font-size:14px;color:#6E6E73;line-height:1.7;">
                 When you arrive, our hosts will greet you and walk everyone through the rules.
-                No preparation needed &mdash; just show up and have fun. Wear whatever you like
-                and feel free to bring friends.
+                No preparation needed &mdash; just show up and have fun. Wear whatever you like.
               </p>
 
               <!-- Refund note -->
