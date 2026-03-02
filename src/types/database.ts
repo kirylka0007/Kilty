@@ -8,6 +8,7 @@ export interface DbEvent {
   total_spots: number;
   price_pence: number;
   is_published: boolean;
+  language: "English" | "Russian";
 }
 
 export interface DbRegistration {

@@ -26,6 +26,7 @@ export interface EventWithAvailability {
   pricePence: number;
   registrationCount: number;
   spotsRemaining: number;
+  language: "English" | "Russian";
 }
 
 export interface RegistrationFormData {

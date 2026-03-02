@@ -178,6 +178,9 @@ export default function EventCalendar({
                 {selectedEvent.time.slice(0, 5)} &middot;{" "}
                 {selectedEvent.venue}
               </p>
+              <span className="mt-1.5 inline-block rounded-full bg-black px-2.5 py-0.5 text-xs font-semibold text-white">
+                {selectedEvent.language === "Russian" ? "🇷🇺 Russian" : "🇬🇧 English"}
+              </span>
             </div>
             <SpotsBadge
               spotsRemaining={selectedEvent.spotsRemaining}

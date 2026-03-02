@@ -35,6 +35,7 @@ async function getEvents(): Promise<EventWithAvailability[]> {
     pricePence: row.price_pence,
     registrationCount: row.registration_count,
     spotsRemaining: row.spots_remaining,
+    language: row.language,
   }));
 }
 
