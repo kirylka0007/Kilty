@@ -1,7 +1,5 @@
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 interface ConfirmationEmailParams {
   to: string;
   fullName: string;
@@ -14,6 +12,7 @@ interface ConfirmationEmailParams {
 }
 
 export async function sendConfirmationEmail(params: ConfirmationEmailParams) {
+  const resend = new Resend(process.env.RESEND_API_KEY);
   const { to, fullName, city, date, time, venue, language, pricePence } =
     params;
 
