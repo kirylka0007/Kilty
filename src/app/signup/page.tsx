@@ -9,7 +9,7 @@ export const revalidate = 60;
 export const metadata = {
   title: "Sign Up",
   description:
-    "Grab your spot at the next Mafia Kilty social deduction night in Edinburgh or Glasgow. From £20 per person.",
+    "Grab your spot at the next Mafia Kilty social deduction night in Edinburgh or Glasgow.",
 };
 
 async function getEvents(): Promise<EventWithAvailability[]> {
@@ -57,9 +57,6 @@ export default async function SignupPage({ searchParams }: SignupPageProps) {
             Pick your city, choose a date, and get ready for an evening of
             bluffing, deduction, and plenty of laughs. No experience needed —
             we&apos;ll teach you everything on the night.
-          </p>
-          <p className="mt-4 font-heading text-xl font-bold text-black">
-            From &pound;20 per person
           </p>
         </div>
 
