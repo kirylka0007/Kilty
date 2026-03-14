@@ -2,6 +2,12 @@ import { Photo } from "@/types";
 
 export const photos: Photo[] = [
   {
+    src: "/photos/DS706499.jpg",
+    alt: "Players at a Mafia Kilty social deduction night",
+    width: 1200,
+    height: 800,
+  },
+  {
     src: "/photos/DS706424.jpg",
     alt: "Event host wearing a dramatic mask at a Mafia Kilty night in Edinburgh",
     width: 1200,
