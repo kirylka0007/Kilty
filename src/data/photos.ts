@@ -4,8 +4,8 @@ export const photos: Photo[] = [
   {
     src: "/photos/DS706499.jpg",
     alt: "Players at a Mafia Kilty social deduction night",
-    width: 1200,
-    height: 800,
+    width: 3115,
+    height: 6000,
   },
   {
     src: "/photos/DS706424.jpg",
