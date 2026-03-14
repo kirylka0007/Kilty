@@ -9,11 +9,13 @@ interface ConfirmationEmailParams {
   venue: string;
   language: string;
   pricePence: number;
+  ticketQuantity: number;
+  guestNames: string[];
 }
 
 export async function sendConfirmationEmail(params: ConfirmationEmailParams) {
   const resend = new Resend(process.env.RESEND_API_KEY);
-  const { to, fullName, city, date, time, venue, language, pricePence } =
+  const { to, fullName, city, date, time, venue, language, pricePence, ticketQuantity, guestNames } =
     params;
 
   const eventDate = new Date(date + "T00:00:00").toLocaleDateString("en-GB", {
@@ -23,7 +25,7 @@ export async function sendConfirmationEmail(params: ConfirmationEmailParams) {
     year: "numeric",
   });
   const eventTime = time.slice(0, 5);
-  const price = `£${(pricePence / 100).toFixed(2)}`;
+  const price = `£${((pricePence * ticketQuantity) / 100).toFixed(2)}`;
   const firstName = fullName.split(" ")[0];
 
   const html = `<!DOCTYPE html>
@@ -89,6 +91,10 @@ export async function sendConfirmationEmail(params: ConfirmationEmailParams) {
                         <td style="padding:5px 0;font-size:14px;font-weight:600;color:#0A0A0A;">Game in ${language}</td>
                       </tr>
                       <tr>
+                        <td style="padding:5px 0;font-size:14px;color:#6E6E73;">Tickets</td>
+                        <td style="padding:5px 0;font-size:14px;font-weight:600;color:#0A0A0A;">${ticketQuantity} ticket${ticketQuantity > 1 ? "s" : ""}</td>
+                      </tr>
+                      <tr>
                         <td style="padding:5px 0;font-size:14px;color:#6E6E73;">Paid</td>
                         <td style="padding:5px 0;font-size:14px;font-weight:600;color:#0A0A0A;">${price}</td>
                       </tr>
@@ -96,6 +102,26 @@ export async function sendConfirmationEmail(params: ConfirmationEmailParams) {
                   </td>
                 </tr>
               </table>
+
+              ${ticketQuantity > 1 ? `
+              <!-- Who's coming -->
+              <table width="100%" cellpadding="0" cellspacing="0"
+                style="background:#F5F5F7;border-radius:12px;padding:20px 24px;margin-bottom:28px;">
+                <tr>
+                  <td>
+                    <p style="margin:0 0 14px;font-size:13px;font-weight:600;color:#6E6E73;
+                               text-transform:uppercase;letter-spacing:0.5px;">
+                      Who&rsquo;s Coming
+                    </p>
+                    <ul style="margin:0;padding:0;list-style:none;">
+                      <li style="padding:4px 0;font-size:14px;font-weight:600;color:#0A0A0A;">
+                        ${fullName} <span style="font-weight:400;color:#6E6E73;">(lead booker)</span>
+                      </li>
+                      ${guestNames.map((name) => `<li style="padding:4px 0;font-size:14px;font-weight:600;color:#0A0A0A;">${name}</li>`).join("")}
+                    </ul>
+                  </td>
+                </tr>
+              </table>` : ""}
 
               <!-- What to expect -->
               <h2 style="margin:0 0 10px;font-size:16px;font-weight:700;color:#0A0A0A;">

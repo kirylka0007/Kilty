@@ -22,8 +22,11 @@ export default function RegistrationForm({
     telegram: "",
     instagram: "",
     telephone: "",
+    ticketQuantity: 1,
+    guestNames: [],
   });
   const [errors, setErrors] = useState<ValidationErrors>({});
+  const [guestErrors, setGuestErrors] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
   const [termsAccepted, setTermsAccepted] = useState(false);
@@ -31,14 +34,36 @@ export default function RegistrationForm({
 
   function handleChange(field: keyof RegistrationFormData, value: string) {
     setFormData((prev) => ({ ...prev, [field]: value }));
-    // Clear field error on change
-    if (errors[field]) {
+    if (errors[field as keyof ValidationErrors]) {
       setErrors((prev) => {
         const next = { ...prev };
-        delete next[field];
+        delete next[field as keyof ValidationErrors];
         return next;
       });
     }
+  }
+
+  function handleQuantityChange(delta: number) {
+    setFormData((prev) => {
+      const next = Math.min(4, Math.max(1, prev.ticketQuantity + delta));
+      const guests = prev.guestNames.slice(0, next - 1);
+      while (guests.length < next - 1) guests.push("");
+      return { ...prev, ticketQuantity: next, guestNames: guests };
+    });
+    setGuestErrors([]);
+  }
+
+  function handleGuestChange(index: number, value: string) {
+    setFormData((prev) => {
+      const guests = [...prev.guestNames];
+      guests[index] = value;
+      return { ...prev, guestNames: guests };
+    });
+    setGuestErrors((prev) => {
+      const next = [...prev];
+      next[index] = "";
+      return next;
+    });
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -53,6 +78,15 @@ export default function RegistrationForm({
     const validationErrors = validateRegistration(formData);
     if (hasErrors(validationErrors)) {
       setErrors(validationErrors);
+      return;
+    }
+
+    // Validate guest names
+    const newGuestErrors = formData.guestNames.map((name) =>
+      name.trim() === "" ? "Guest name is required" : ""
+    );
+    if (newGuestErrors.some((e) => e !== "")) {
+      setGuestErrors(newGuestErrors);
       return;
     }
 
@@ -76,6 +110,8 @@ export default function RegistrationForm({
     { weekday: "long", day: "numeric", month: "long" }
   );
 
+  const totalPrice = (event.pricePence * formData.ticketQuantity) / 100;
+
   return (
     <div>
       {/* Event summary */}
@@ -92,6 +128,37 @@ export default function RegistrationForm({
           <p className="font-heading text-lg font-bold text-black">
             &pound;{(event.pricePence / 100).toFixed(2)}
           </p>
+        </div>
+      </div>
+
+      {/* Ticket quantity stepper */}
+      <div className="mb-6">
+        <label className="mb-1.5 block text-sm font-semibold text-black">
+          Number of Tickets
+        </label>
+        <div className="flex items-center gap-4">
+          <div className="flex items-center rounded-xl border border-grey-light bg-white">
+            <button
+              type="button"
+              onClick={() => handleQuantityChange(-1)}
+              disabled={formData.ticketQuantity <= 1}
+              className="flex h-11 w-11 items-center justify-center rounded-l-xl text-lg font-semibold text-black transition-colors hover:bg-off-white disabled:cursor-not-allowed disabled:opacity-30"
+            >
+              −
+            </button>
+            <span className="w-10 text-center text-sm font-semibold text-black">
+              {formData.ticketQuantity}
+            </span>
+            <button
+              type="button"
+              onClick={() => handleQuantityChange(1)}
+              disabled={formData.ticketQuantity >= 4}
+              className="flex h-11 w-11 items-center justify-center rounded-r-xl text-lg font-semibold text-black transition-colors hover:bg-off-white disabled:cursor-not-allowed disabled:opacity-30"
+            >
+              +
+            </button>
+          </div>
+          <p className="text-sm text-grey-mid">Max 4 tickets per booking</p>
         </div>
       </div>
 
@@ -119,6 +186,32 @@ export default function RegistrationForm({
               <p className="mt-1 text-xs text-red-500">{errors.fullName}</p>
             )}
           </div>
+
+          {/* Guest Name fields */}
+          {formData.ticketQuantity > 1 &&
+            Array.from({ length: formData.ticketQuantity - 1 }, (_, i) => (
+              <div key={i}>
+                <label
+                  htmlFor={`guest-${i}`}
+                  className="mb-1.5 block text-sm font-semibold text-black"
+                >
+                  Guest {i + 2} Name <span className="text-red-500">*</span>
+                </label>
+                <input
+                  id={`guest-${i}`}
+                  type="text"
+                  value={formData.guestNames[i] ?? ""}
+                  onChange={(e) => handleGuestChange(i, e.target.value)}
+                  className={`w-full rounded-xl border bg-white px-4 py-3 text-sm text-black outline-none transition-colors placeholder:text-grey-mid focus:border-black focus:ring-1 focus:ring-black ${
+                    guestErrors[i] ? "border-red-400" : "border-grey-light"
+                  }`}
+                  placeholder={`Guest ${i + 2} full name`}
+                />
+                {guestErrors[i] && (
+                  <p className="mt-1 text-xs text-red-500">{guestErrors[i]}</p>
+                )}
+              </div>
+            ))}
 
           {/* Email */}
           <div>
@@ -276,7 +369,7 @@ export default function RegistrationForm({
                 Processing...
               </>
             ) : (
-              `Pay £${(event.pricePence / 100).toFixed(2)}`
+              `Pay £${totalPrice.toFixed(2)}${formData.ticketQuantity > 1 ? ` (${formData.ticketQuantity} tickets)` : ""}`
             )}
           </button>
         </div>

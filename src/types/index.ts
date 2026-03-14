@@ -35,4 +35,6 @@ export interface RegistrationFormData {
   telegram: string;
   instagram: string;
   telephone: string;
+  ticketQuantity: number;
+  guestNames: string[];
 }

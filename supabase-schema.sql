@@ -69,6 +69,32 @@ left join (
 ) r on r.event_id = e.id;
 
 -- ============================================================
+-- Multi-ticket migration (run manually in Supabase SQL Editor)
+-- ============================================================
+
+-- 1. Add ticket_quantity column
+-- ALTER TABLE registrations
+--   ADD COLUMN ticket_quantity integer NOT NULL DEFAULT 1
+--   CHECK (ticket_quantity BETWEEN 1 AND 4);
+
+-- 2. Add guest_names column (JSON array of strings, nullable for solo bookings)
+-- ALTER TABLE registrations
+--   ADD COLUMN guest_names jsonb;
+
+-- 3. Recreate event_availability view to sum ticket_quantity instead of counting rows
+-- DROP VIEW event_availability;
+--
+-- CREATE VIEW event_availability AS
+-- SELECT
+--   e.*,
+--   COALESCE(SUM(r.ticket_quantity), 0)::integer AS registration_count,
+--   (e.total_spots - COALESCE(SUM(r.ticket_quantity), 0))::integer AS spots_remaining
+-- FROM events e
+-- LEFT JOIN registrations r
+--   ON r.event_id = e.id AND r.payment_status = 'paid'
+-- GROUP BY e.id;
+
+-- ============================================================
 -- Row Level Security
 -- ============================================================
 

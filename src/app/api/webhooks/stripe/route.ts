@@ -32,6 +32,8 @@ export async function POST(request: Request) {
     case "checkout.session.completed": {
       const session = event.data.object as Stripe.Checkout.Session;
       const meta = session.metadata || {};
+      const ticketQuantity = parseInt(meta.ticket_quantity || "1", 10);
+      const guestNames: string[] = JSON.parse(meta.guest_names || "[]");
 
       try {
         const { error } = await supabaseAdmin.from("registrations").insert({
@@ -43,6 +45,8 @@ export async function POST(request: Request) {
           telephone: meta.telephone || null,
           payment_status: "paid",
           stripe_session_id: session.id,
+          ticket_quantity: ticketQuantity,
+          guest_names: guestNames.length > 0 ? guestNames : null,
         });
 
         if (error) {
@@ -69,6 +73,8 @@ export async function POST(request: Request) {
               venue: eventData.venue,
               language: eventData.language,
               pricePence: eventData.price_pence,
+              ticketQuantity,
+              guestNames,
             }).catch((err) => {
               console.error("Failed to send confirmation email:", err);
             });

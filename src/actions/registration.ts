@@ -34,8 +34,16 @@ export async function createRegistration(
     return { success: false, error: "Event not found." };
   }
 
-  if (event.spots_remaining <= 0) {
-    return { success: false, error: "Sorry, this event is sold out." };
+  const ticketQuantity = formData.ticketQuantity ?? 1;
+
+  if (event.spots_remaining < ticketQuantity) {
+    return {
+      success: false,
+      error:
+        ticketQuantity > 1
+          ? `Sorry, there are not enough spots remaining for ${ticketQuantity} tickets.`
+          : "Sorry, this event is sold out.",
+    };
   }
 
   // Check for duplicate registration (only paid registrations exist now)
@@ -75,7 +83,7 @@ export async function createRegistration(
             description: `${eventDate} at ${event.venue}`,
           },
         },
-        quantity: 1,
+        quantity: ticketQuantity,
       },
     ],
     customer_email: email,
@@ -88,6 +96,8 @@ export async function createRegistration(
       telegram: formData.telegram.trim() || "",
       instagram: formData.instagram.trim() || "",
       telephone: formData.telephone.trim() || "",
+      ticket_quantity: String(ticketQuantity),
+      guest_names: JSON.stringify(formData.guestNames ?? []),
     },
   });
 
