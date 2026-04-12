@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import MobileNav from "./MobileNav";
+import AuthButton from "@/components/auth/AuthButton";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -64,6 +65,7 @@ export default function Header() {
               {link.label}
             </Link>
           ))}
+          <AuthButton />
           <Link
             href="/signup"
             className="shrink-0 whitespace-nowrap rounded-xl bg-white px-6 py-3 text-sm font-semibold text-black transition-colors hover:bg-transparent hover:text-white hover:ring-2 hover:ring-white"

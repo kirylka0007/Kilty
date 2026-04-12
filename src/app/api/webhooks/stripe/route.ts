@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { stripe } from "@/lib/stripe";
-import { supabaseAdmin } from "@/lib/supabase/server";
+import { getStripe } from "@/lib/stripe";
+import { getSupabaseAdmin } from "@/lib/supabase/server";
 import { sendConfirmationEmail } from "@/lib/email";
 import type Stripe from "stripe";
 
@@ -15,7 +15,7 @@ export async function POST(request: Request) {
   let event: Stripe.Event;
 
   try {
-    event = stripe.webhooks.constructEvent(
+    event = getStripe().webhooks.constructEvent(
       body,
       signature,
       process.env.STRIPE_WEBHOOK_SECRET!
@@ -36,7 +36,7 @@ export async function POST(request: Request) {
       const guestNames: string[] = JSON.parse(meta.guest_names || "[]");
 
       try {
-        const { error } = await supabaseAdmin.from("registrations").insert({
+        const { error } = await getSupabaseAdmin().from("registrations").insert({
           event_id: meta.event_id,
           full_name: meta.full_name,
           email: meta.email,
@@ -57,7 +57,7 @@ export async function POST(request: Request) {
           }
         } else {
           // Fetch event details for the confirmation email
-          const { data: eventData } = await supabaseAdmin
+          const { data: eventData } = await getSupabaseAdmin()
             .from("events")
             .select("city, date, time, venue, language, price_pence")
             .eq("id", meta.event_id)

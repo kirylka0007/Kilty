@@ -1,9 +1,10 @@
 "use server";
 
-import { supabaseAdmin } from "@/lib/supabase/server";
-import { stripe } from "@/lib/stripe";
+import { getSupabaseAdmin } from "@/lib/supabase/server";
+import { getStripe } from "@/lib/stripe";
 import { validateRegistration, hasErrors } from "@/lib/validators";
 import type { RegistrationFormData } from "@/types";
+import type { DbEventAvailability } from "@/types/database";
 
 interface RegistrationResult {
   success: boolean;
@@ -24,15 +25,17 @@ export async function createRegistration(
   const email = formData.email.trim().toLowerCase();
 
   // Fetch event details and check availability
-  const { data: event, error: eventError } = await supabaseAdmin
+  const { data, error: eventError } = await getSupabaseAdmin()
     .from("event_availability")
     .select("*")
     .eq("id", eventId)
     .single();
 
-  if (eventError || !event) {
+  if (eventError || !data) {
     return { success: false, error: "Event not found." };
   }
+
+  const event = data as unknown as DbEventAvailability;
 
   const ticketQuantity = formData.ticketQuantity ?? 1;
 
@@ -47,7 +50,7 @@ export async function createRegistration(
   }
 
   // Check for duplicate registration (only paid registrations exist now)
-  const { data: existing } = await supabaseAdmin
+  const { data: existing } = await getSupabaseAdmin()
     .from("registrations")
     .select("id")
     .eq("event_id", eventId)
@@ -71,7 +74,7 @@ export async function createRegistration(
     month: "long",
   });
 
-  const session = await stripe.checkout.sessions.create({
+  const session = await getStripe().checkout.sessions.create({
     mode: "payment",
     line_items: [
       {

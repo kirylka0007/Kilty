@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import type { EventWithAvailability, RegistrationFormData } from "@/types";
 import { validateRegistration, hasErrors } from "@/lib/validators";
 import type { ValidationErrors } from "@/lib/validators";
 import { createRegistration } from "@/actions/registration";
+import { useAuth } from "@/components/auth/AuthProvider";
 
 interface RegistrationFormProps {
   event: EventWithAvailability;
@@ -16,6 +17,7 @@ export default function RegistrationForm({
   event,
   onBack,
 }: RegistrationFormProps) {
+  const { user, profile } = useAuth();
   const [formData, setFormData] = useState<RegistrationFormData>({
     fullName: "",
     email: "",
@@ -25,6 +27,16 @@ export default function RegistrationForm({
     ticketQuantity: 1,
     guestNames: [],
   });
+
+  // Auto-populate from logged-in user profile
+  useEffect(() => {
+    if (profile?.fullName && !formData.fullName) {
+      setFormData((prev) => ({ ...prev, fullName: profile.fullName }));
+    }
+    if (user?.email && !formData.email) {
+      setFormData((prev) => ({ ...prev, email: user.email ?? prev.email }));
+    }
+  }, [profile, user]);
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [guestErrors, setGuestErrors] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);

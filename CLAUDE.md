@@ -11,26 +11,34 @@ Social deduction events site for Edinburgh & Glasgow. Users browse upcoming even
 - **Email**: Resend (transactional confirmation emails)
 - **Deployment**: Vercel (auto-deploy from `main` branch)
 - **Domain**: www.mafiakilty.co.uk (Namecheap DNS)
+- **Auth**: Supabase Auth (magic link / OTP, optional accounts)
 - **Email address**: info@mafiakilty.co.uk (Namecheap Private Email + Resend sending domain)
 
 ## File Structure
 
 ```
 src/
-├── actions/registration.ts        # Server action: validate → check availability → create Stripe session
+├── actions/
+│   ├── registration.ts            # Server action: validate → check availability → create Stripe session
+│   └── profile.ts                 # Server action: update user profile (full_name)
 ├── app/
-│   ├── layout.tsx                 # Root layout (fonts, metadata)
+│   ├── layout.tsx                 # Root layout (fonts, metadata, AuthProvider wrapper)
 │   ├── page.tsx                   # Home page
 │   ├── not-found.tsx              # 404 page
 │   ├── robots.ts / sitemap.ts    # SEO
 │   ├── globals.css                # Tailwind theme + base styles
 │   ├── api/webhooks/stripe/
 │   │   └── route.ts              # POST handler: verify signature → insert registration → send email
+│   ├── account/page.tsx            # User account page (view/edit profile)
+│   ├── auth/callback/route.ts     # Magic link callback (exchange code → session → redirect)
 │   ├── photos/page.tsx            # Photo gallery
 │   ├── signup/page.tsx            # Signup page (fetches events, renders SignupFlow)
 │   ├── signup/success/page.tsx    # Post-payment confirmation
 │   └── terms/page.tsx             # Terms & Conditions page
 ├── components/
+│   ├── auth/
+│   │   ├── AuthProvider.tsx       # React context: user, profile, isLoading, signOut, refreshProfile
+│   │   └── AuthButton.tsx         # Header auth UI: sign-in dropdown / user menu
 │   ├── home/                      # Hero, WhatItIs, HowItWorks, WhereWeRun, PhotosTeaser, FAQ
 │   ├── layout/                    # Header, Footer, Container, MobileNav
 │   ├── photos/                    # Gallery, Lightbox
@@ -45,8 +53,10 @@ src/
 │   ├── metadata.ts                # Metadata builder helper
 │   ├── analytics.ts               # Analytics placeholder
 │   └── supabase/
-│       ├── client.ts              # Public Supabase client (anon key, read-only)
-│       └── server.ts              # Admin Supabase client (service role key)
+│       ├── client.ts              # Public Supabase client (anon key, read-only, lazy init)
+│       ├── server.ts              # Admin Supabase client (service role key, lazy init)
+│       ├── browser.ts             # Browser Supabase client for auth (@supabase/ssr)
+│       └── server-auth.ts         # Server cookie-aware Supabase client for auth (@supabase/ssr)
 └── types/
     ├── index.ts                   # App types (EventWithAvailability, RegistrationFormData, Photo, FAQItem)
     └── database.ts                # DB row types (DbEvent, DbRegistration, DbEventAvailability)
@@ -100,9 +110,14 @@ Schema defined in `supabase-schema.sql`.
   - `language`: `'English'` or `'Russian'` (NOT NULL, default `'English'`)
   - `price_pence`: set per event (e.g. 1500 = £15, 2000 = £20)
   - Unique constraint on (city, date)
-- `registrations` — event_id (FK), full_name, email, telegram, instagram, telephone, payment_status, stripe_session_id
+- `registrations` — event_id (FK), full_name, email, telegram, instagram, telephone, payment_status, stripe_session_id, ticket_quantity, guest_names
   - payment_status is either `paid` or `refunded`
   - stripe_session_id is unique
+  - ticket_quantity: 1–4, default 1
+  - guest_names: JSONB array of strings (null for solo bookings)
+- `profiles` — id (FK → auth.users), full_name, email, created_at, updated_at
+  - Auto-created on signup via database trigger
+  - RLS: users can only read/update their own profile
 
 **Views:**
 - `event_availability` — joins events with counted paid registrations to compute `registration_count` and `spots_remaining`
@@ -112,13 +127,15 @@ Schema defined in `supabase-schema.sql`.
 - Events: anon can SELECT where `is_published = true`
 - Registrations: no anon access; only service role can read/write
 
-**Two clients:**
-- `lib/supabase/client.ts` — public anon key, used in signup page to fetch events
-- `lib/supabase/server.ts` — service role key, used in webhook and server action
+**Four clients:**
+- `lib/supabase/client.ts` — public anon key, used in signup page to fetch events (lazy init via `getSupabase()`)
+- `lib/supabase/server.ts` — service role key, used in webhook and server action (lazy init via `getSupabaseAdmin()`)
+- `lib/supabase/browser.ts` — browser client for auth via `@supabase/ssr` (`createBrowserClient`)
+- `lib/supabase/server-auth.ts` — server cookie-aware client for auth via `@supabase/ssr` (`createServerClient`)
 
 ## Stripe
 
-- SDK initialised in `lib/stripe.ts` with `STRIPE_SECRET_KEY`
+- SDK lazily initialised in `lib/stripe.ts` via `getStripe()` (not at module level, to avoid build-time errors)
 - Checkout sessions created in `actions/registration.ts` with `mode: "payment"`, currency GBP, amount from `price_pence`
 - All form data passed as session metadata so the webhook can insert it
 - Webhook at `/api/webhooks/stripe` verifies signature with `STRIPE_WEBHOOK_SECRET`
@@ -131,6 +148,18 @@ Schema defined in `supabase-schema.sql`.
 - Sends from `info@mafiakilty.co.uk` to the registrant
 - Email includes: event city, date, time, venue, language, price paid, refund policy, contact info
 - Domain `mafiakilty.co.uk` must be verified in Resend with DKIM + SPF DNS records
+
+## User Accounts (Optional)
+
+- **Magic link only** — no passwords. Supabase `signInWithOtp` handles both signup and login
+- **Header dropdown** for sign-in (email input → "Send magic link"). No separate sign-in page
+- **Callback route**: `/auth/callback` exchanges the magic link code for a session
+- **New users** redirected to `/account` to enter full name; returning users go to home
+- **Registration form auto-populates** name and email from profile when logged in
+- **Guest checkout still works** — accounts are entirely optional, no registration is linked to user_id
+- **`profiles` table** stores `full_name` alongside Supabase Auth user (Auth only stores email)
+- **Middleware** (`src/middleware.ts`) refreshes auth session on every request
+- **Supabase Auth Dashboard config**: Enable Email provider with magic link, set Site URL and redirect URL
 
 ## Environment Variables
 

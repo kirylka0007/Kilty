@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
+import { useAuth } from "@/components/auth/AuthProvider";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -11,6 +12,7 @@ const navLinks = [
 ];
 
 export default function MobileNav() {
+  const { user, profile, signOut } = useAuth();
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -86,6 +88,35 @@ export default function MobileNav() {
                   {link.label}
                 </Link>
               ))}
+              {user ? (
+                <>
+                  <Link
+                    href="/account"
+                    onClick={close}
+                    className="font-heading text-3xl font-bold text-white transition-colors hover:text-grey-light"
+                  >
+                    My Account
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      await signOut();
+                      close();
+                    }}
+                    className="font-heading text-3xl font-bold text-grey-mid transition-colors hover:text-grey-light"
+                  >
+                    Sign Out
+                  </button>
+                </>
+              ) : (
+                <Link
+                  href="/account"
+                  onClick={close}
+                  className="font-heading text-3xl font-bold text-white transition-colors hover:text-grey-light"
+                >
+                  Sign In
+                </Link>
+              )}
             </nav>
           </div>,
           document.body

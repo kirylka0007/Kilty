@@ -4,6 +4,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import { AuthProvider } from "@/components/auth/AuthProvider";
 import { siteConfig } from "@/config/site";
 import "./globals.css";
 
@@ -65,9 +66,11 @@ export default function RootLayout({
       <body
         className={`${spaceGrotesk.variable} ${inter.variable} antialiased`}
       >
-        <Header />
-        <main className="min-h-screen min-w-0 overflow-x-hidden">{children}</main>
-        <Footer />
+        <AuthProvider>
+          <Header />
+          <main className="min-h-screen min-w-0 overflow-x-hidden">{children}</main>
+          <Footer />
+        </AuthProvider>
         <Analytics />
         <SpeedInsights />
       </body>

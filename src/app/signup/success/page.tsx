@@ -1,8 +1,10 @@
 import { redirect } from "next/navigation";
 import Container from "@/components/layout/Container";
 import Button from "@/components/ui/Button";
-import { stripe } from "@/lib/stripe";
+import { getStripe } from "@/lib/stripe";
 import { siteConfig } from "@/config/site";
+
+export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "You're In!",
@@ -24,10 +26,10 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
   let eventDescription = "";
 
   try {
-    const session = await stripe.checkout.sessions.retrieve(session_id);
+    const session = await getStripe().checkout.sessions.retrieve(session_id);
     customerEmail = session.customer_email || "";
     // The line_items description contains the event details
-    const lineItems = await stripe.checkout.sessions.listLineItems(session_id, {
+    const lineItems = await getStripe().checkout.sessions.listLineItems(session_id, {
       limit: 1,
     });
     eventDescription = lineItems.data[0]?.description || "";

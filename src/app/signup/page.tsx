@@ -1,9 +1,10 @@
 import Container from "@/components/layout/Container";
 import SignupFlow from "@/components/signup/SignupFlow";
-import { supabase } from "@/lib/supabase/client";
+import { getSupabase } from "@/lib/supabase/client";
 import type { EventWithAvailability } from "@/types";
 import type { DbEventAvailability } from "@/types/database";
 
+export const dynamic = "force-dynamic";
 export const revalidate = 60;
 
 export const metadata = {
@@ -15,7 +16,7 @@ export const metadata = {
 async function getEvents(): Promise<EventWithAvailability[]> {
   const today = new Date().toISOString().split("T")[0];
 
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from("event_availability")
     .select("*")
     .eq("is_published", true)
