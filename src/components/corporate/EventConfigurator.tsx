@@ -1,37 +1,35 @@
 "use client";
 
-import { occasions, locations, dateWindows } from "@/data/corporate";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { occasions, locations } from "@/data/corporate";
 
 interface EventConfiguratorProps {
   groupSize: number;
   occasionValue: string;
   location: string;
-  dateWindow: string;
   onGroupSize: (value: number) => void;
   onOccasion: (value: string) => void;
   onLocation: (value: string) => void;
-  onDateWindow: (value: string) => void;
-  /** Pre-computed recommendation lines from the wrapper. */
   tableSplit: string;
   formatLabel: string;
   duration: string;
   onApply: () => void;
 }
 
-function Segmented({
-  label,
+function Pills({
   value,
   options,
   onChange,
+  label,
 }: {
-  label: string;
   value: string;
   options: { value: string; label: string }[];
   onChange: (value: string) => void;
+  label: string;
 }) {
   return (
     <div>
-      <span className="mb-2 block font-mono text-xs uppercase tracking-widest text-brass">
+      <span className="mb-2 block text-xs font-semibold uppercase tracking-widest text-grey-mid">
         {label}
       </span>
       <div className="flex flex-wrap gap-2">
@@ -43,10 +41,10 @@ function Segmented({
               type="button"
               onClick={() => onChange(opt.value)}
               aria-pressed={active}
-              className={`rounded-lg px-3.5 py-2 text-sm font-semibold transition-colors ${
+              className={`rounded-full px-3.5 py-1.5 text-sm font-semibold transition-colors ${
                 active
-                  ? "bg-white text-black"
-                  : "bg-white/5 text-grey-light ring-1 ring-white/15 hover:bg-white/10 hover:text-white"
+                  ? "bg-black text-white"
+                  : "bg-white text-grey-dark ring-1 ring-grey-light hover:ring-black"
               }`}
             >
               {opt.label}
@@ -62,41 +60,34 @@ export default function EventConfigurator({
   groupSize,
   occasionValue,
   location,
-  dateWindow,
   onGroupSize,
   onOccasion,
   onLocation,
-  onDateWindow,
   tableSplit,
   formatLabel,
   duration,
   onApply,
 }: EventConfiguratorProps) {
+  const reduce = useReducedMotion();
+
   return (
-    <div className="rounded-2xl border border-white/10 bg-charcoal p-7 sm:p-9">
-      <p className="font-mono text-xs uppercase tracking-widest text-brass">
-        — Build your event
-      </p>
-      <h3 className="mt-3 font-heading text-2xl font-bold text-white">
-        Shape it to your team
+    <div className="rounded-2xl border border-grey-light bg-white p-6 sm:p-7">
+      <h3 className="font-heading text-lg font-bold text-black">
+        Build a rough shape
       </h3>
-      <p className="mt-2 text-sm text-grey-light">
-        Set the basics and we&rsquo;ll suggest a format. No price, no commitment —
-        it just pre-fills the enquiry.
+      <p className="mt-1 text-sm text-grey-mid">
+        Two taps and a drag — we&rsquo;ll suggest a format and pre-fill the form.
       </p>
 
-      <div className="mt-8 space-y-7">
-        {/* Group size slider */}
+      <div className="mt-6 space-y-6">
         <div>
           <div className="mb-2 flex items-baseline justify-between">
-            <span className="font-mono text-xs uppercase tracking-widest text-brass">
+            <span className="text-xs font-semibold uppercase tracking-widest text-grey-mid">
               Group size
             </span>
-            <span className="font-heading text-lg font-bold text-white">
+            <span className="font-heading text-base font-bold text-black">
               {groupSize}
-              <span className="ml-1 text-sm font-normal text-grey-mid">
-                {groupSize >= 50 ? "+" : ""} people
-              </span>
+              {groupSize >= 50 ? "+" : ""} people
             </span>
           </div>
           <input
@@ -107,54 +98,48 @@ export default function EventConfigurator({
             value={groupSize}
             onChange={(e) => onGroupSize(Number(e.target.value))}
             aria-label="Group size"
-            className="h-2 w-full cursor-pointer appearance-none rounded-full bg-white/15"
-            style={{ accentColor: "#C9A24B" }}
+            className="h-2 w-full cursor-pointer appearance-none rounded-full bg-grey-light"
+            style={{ accentColor: "#0A0A0A" }}
           />
-          <div className="mt-1 flex justify-between font-mono text-[11px] text-grey-mid">
-            <span>12</span>
-            <span>50</span>
-          </div>
         </div>
 
-        <Segmented
+        <Pills
           label="Occasion"
           value={occasionValue}
           options={occasions.map((o) => ({ value: o.value, label: o.label }))}
           onChange={onOccasion}
         />
-
-        <Segmented
+        <Pills
           label="Location"
           value={location}
           options={locations.map((l) => ({ value: l, label: l }))}
           onChange={onLocation}
         />
-
-        <Segmented
-          label="When"
-          value={dateWindow}
-          options={dateWindows.map((d) => ({ value: d, label: d }))}
-          onChange={onDateWindow}
-        />
       </div>
 
-      {/* Recommendation card */}
-      <div className="mt-8 rounded-xl border border-brass/40 bg-black p-5">
-        <p className="font-mono text-xs uppercase tracking-widest text-brass">
-          — Our recommendation
-        </p>
-        <p className="mt-3 font-heading text-lg font-bold leading-snug text-white">
-          {tableSplit}
-        </p>
-        <p className="mt-1.5 text-sm text-grey-light">
-          {formatLabel} · {duration} · {location}
-        </p>
+      {/* Recommendation */}
+      <div className="mt-6 rounded-xl bg-black p-5 text-white">
+        <span className="text-xs font-semibold uppercase tracking-widest text-brass">
+          We&rsquo;d suggest
+        </span>
+        <AnimatePresence mode="wait">
+          <motion.p
+            key={`${tableSplit}-${formatLabel}`}
+            initial={reduce ? false : { opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={reduce ? undefined : { opacity: 0, y: -6 }}
+            transition={{ duration: 0.25 }}
+            className="mt-2 font-heading text-base font-bold leading-snug"
+          >
+            {tableSplit} · {formatLabel} · {duration}
+          </motion.p>
+        </AnimatePresence>
         <button
           type="button"
           onClick={onApply}
-          className="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-brass px-6 py-3.5 text-sm font-semibold text-black transition-all duration-200 hover:bg-white"
+          className="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-brass px-5 py-3 text-sm font-semibold text-black transition-colors hover:bg-white"
         >
-          Request a quote for this →
+          Use this in the form →
         </button>
       </div>
     </div>

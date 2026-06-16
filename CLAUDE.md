@@ -6,6 +6,7 @@ Social deduction events site for Edinburgh & Glasgow. Users browse upcoming even
 
 - **Framework**: Next.js 16 (App Router) with React 19 and TypeScript 5
 - **Styling**: Tailwind CSS v4 (PostCSS plugin, `@theme inline` syntax)
+- **Animation**: Framer Motion (`framer-motion`) — used on the `/corporate` page
 - **Database**: Supabase (PostgreSQL + Row Level Security)
 - **Payments**: Stripe Checkout (one-time payments) + Webhooks
 - **Email**: Resend (transactional confirmation emails)
@@ -42,9 +43,9 @@ src/
 │   │   ├── AuthProvider.tsx       # React context: user, profile, isLoading, signOut, refreshProfile
 │   │   └── AuthButton.tsx         # Header auth UI: sign-in dropdown / user menu
 │   ├── home/                      # Hero, WhatItIs, HowItWorks, WhereWeRun, PhotosTeaser, FAQ
-│   ├── corporate/                 # Hero, Manifesto, PeopleSkills, Formats, Included, Stats,
-│   │                              #   CorporateGallery, EventConfigurator, CorporateEnquiryForm,
-│   │                              #   CorporateBooking (state wrapper), CorporateFAQ, CtaBand, Eyebrow
+│   ├── corporate/                 # Hero, WhyItWorks, Included (flow), Formats (animated cards),
+│   │                              #   CorporateGallery, EventConfigurator (slim), CorporateEnquiryForm,
+│   │                              #   CorporateBooking (state wrapper), CorporateFAQ, Reveal (motion helper)
 │   ├── layout/                    # Header, Footer, Container, MobileNav
 │   ├── photos/                    # Gallery, Lightbox
 │   ├── signup/                    # SignupFlow, CityTabs, EventCalendar, RegistrationForm, SpotsBadge
@@ -109,26 +110,30 @@ SignupFlow (client component — manages step state)
 
 ## Corporate Page (`/corporate`)
 
-A standalone landing page for UK businesses (team-building / corporate socials).
-Reuses the existing dark/minimal design system with a "dossier" accent layer:
-a brass eyebrow colour (`--color-brass` in `globals.css`), mono labels, and a
-redacted-headline reveal animation (`.redact`/`unredact` keyframes in
-`globals.css`, respects `prefers-reduced-motion`).
+A standalone, animated landing page for UK businesses (team-building / corporate
+socials). Uses the site's design system (dark/minimal, Space Grotesk + Inter)
+**throughout — no monospace**. Animation via **`framer-motion`**: `Reveal.tsx` is
+a reusable scroll-reveal wrapper (respects `prefers-reduced-motion`); event-type
+cards and the configurator animate client-side. The hero keeps the brass
+redacted-headline reveal (`.redact`/`unredact` in `globals.css`).
 
-**Positioning:** anti-AI / screen-free angle — the game trains the human skills
-that don't automate. **No prices and no testimonials anywhere.** Product facts
-baked into copy: max 25 players per game, two concurrent games for up to 50 total,
-12–50 range used throughout.
+**Positioning:** anti-AI / screen-free angle. Deliberately short and punchy.
+**No prices and no testimonials anywhere.** Product facts: max 25 players per
+game, two concurrent games for up to 50 total, 12–50 range throughout. Real
+stats: 10+ games run, 200+ people played.
 
-**Section order:** Hero (dual CTA) → Manifesto → PeopleSkills → Formats →
-Included → Stats → CorporateGallery → CorporateBooking (configurator + form) →
-CorporateFAQ → CtaBand.
+**Section order (fixed):** Hero (AI hook, dual CTA) → WhyItWorks (science facts)
+→ Included (flowing 5-step sequence) → Formats (animated event-type cards) →
+CorporateGallery → CorporateBooking (slim configurator + form) → CorporateFAQ.
 
-**Configurator → form:** `EventConfigurator` collects group size (12–50),
-occasion, location, and date window, then outputs a **recommendation** (table
-split + format + duration) instead of a price. `CorporateBooking` holds the
-shared state, computes the recommendation string, and pre-fills
-`CorporateEnquiryForm` when the user clicks "Request a quote for this".
+**Why it works:** `scienceFacts` in `src/data/corporate.ts` — each fact has a
+real cited source (Google Project Aristotle; Gallup 2024; Gallup best friends at
+work). Keep verifiable; every fact links to its source.
+
+**Configurator → form:** `EventConfigurator` (slim) collects group size (12–50),
+occasion and location, then outputs a **recommendation** (table split + format +
+duration) instead of a price. `CorporateBooking` holds shared state, computes the
+recommendation string, and pre-fills `CorporateEnquiryForm` on "Use this in the form".
 
 **Enquiry flow:** `submitCorporateEnquiry` (`actions/corporate.ts`) →
 honeypot anti-spam check → `validateCorporateEnquiry` → insert into
@@ -137,11 +142,10 @@ honeypot anti-spam check → `validateCorporateEnquiry` → insert into
 `sendCorporateEnquiryAutoReply` (to the enquirer). Emails are best-effort
 (`Promise.allSettled`) and never block the response.
 
-**Content:** all copy in `src/data/corporate.ts` (formats, peopleSkills,
-included, occasions, locations, dateWindows, stats, corporateFaq,
-corporatePhotos). The `stats` array uses only safe always-true facts — a `TODO`
-there explains how to add verified count-based stats. No Calendly / call-booking
-yet (planned phase 2).
+**Content & assets:** copy in `src/data/corporate.ts` (scienceFacts, formats,
+includedFlow, occasions, locations, dateWindows, corporateFaq, corporatePhotos).
+Corporate photos in `public/photos/corporate/` (web-optimised via `sharp`). No
+Calendly / call-booking yet (planned phase 2).
 
 ## Database (Supabase)
 

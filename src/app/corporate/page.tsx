@@ -2,15 +2,12 @@ import type { Metadata } from "next";
 import { buildMetadata } from "@/lib/metadata";
 import { siteConfig } from "@/config/site";
 import Hero from "@/components/corporate/Hero";
-import Manifesto from "@/components/corporate/Manifesto";
-import PeopleSkills from "@/components/corporate/PeopleSkills";
-import Formats from "@/components/corporate/Formats";
+import WhyItWorks from "@/components/corporate/WhyItWorks";
 import Included from "@/components/corporate/Included";
-import Stats from "@/components/corporate/Stats";
+import Formats from "@/components/corporate/Formats";
 import CorporateGallery from "@/components/corporate/CorporateGallery";
 import CorporateBooking from "@/components/corporate/CorporateBooking";
 import CorporateFAQ from "@/components/corporate/CorporateFAQ";
-import CtaBand from "@/components/corporate/CtaBand";
 
 export const metadata: Metadata = buildMetadata({
   title: "Corporate Team Building — Edinburgh & Glasgow",
@@ -44,15 +41,12 @@ export default function CorporatePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <Hero />
-      <Manifesto />
-      <PeopleSkills />
-      <Formats />
+      <WhyItWorks />
       <Included />
-      <Stats />
+      <Formats />
       <CorporateGallery />
       <CorporateBooking />
       <CorporateFAQ />
-      <CtaBand />
     </>
   );
 }

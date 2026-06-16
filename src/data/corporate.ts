@@ -1,5 +1,5 @@
 import type { Photo } from "@/types";
-import type { CorporateFormat, PeopleSkill } from "@/types";
+import type { CorporateFormat } from "@/types";
 
 /**
  * Copy and data for the /corporate page.
@@ -7,30 +7,61 @@ import type { CorporateFormat, PeopleSkill } from "@/types";
  * total. Use a 12–50 range everywhere. Never show prices.
  */
 
-export const peopleSkills: PeopleSkill[] = [
+/** Short credibility line under the hero. Real numbers only. */
+export const trustPoints: string[] = [
+  "10+ games run",
+  "200+ people played",
+  "Edinburgh, Glasgow & across the UK",
+];
+
+export interface ScienceFact {
+  value: string;
+  claim: string;
+  tieIn: string;
+  source: string;
+  sourceUrl: string;
+}
+
+/**
+ * "Why it works" — credible, verified research. Each fact ties back to the
+ * game. Sources checked June 2026.
+ */
+export const scienceFacts: ScienceFact[] = [
   {
-    number: "01",
-    title: "Reading people",
-    description:
-      "Players live or die by spotting tells, hesitation and inconsistency — the same instinct that closes deals and defuses conflicts.",
+    value: "#1",
+    claim: "predictor of team performance — ahead of talent or seniority",
+    tieIn:
+      "It's whether people feel safe to speak up. Our game runs on exactly that: reading people, speaking up, being wrong out loud — safely.",
+    source: "Google · Project Aristotle (180+ teams)",
+    sourceUrl:
+      "https://rework.withgoogle.com/intl/en/guides/understanding-team-effectiveness",
   },
   {
-    number: "02",
-    title: "Persuasion under pressure",
-    description:
-      "You have one minute to convince the room you're innocent. Quiet colleagues find their voice; loud ones learn to land it.",
+    value: "25% vs 16%",
+    claim: "of remote workers feel lonely daily — versus people in the same room",
+    tieIn:
+      "No screens, no call grid. Just your team, in one room, properly switched on.",
+    source: "Gallup · State of the Global Workplace, 2024",
+    sourceUrl:
+      "https://www.gallup.com/workplace/645566/employees-worldwide-feel-lonely.aspx",
   },
   {
-    number: "03",
-    title: "Trust, fast",
-    description:
-      "Strangers and silo'd departments have to decide who to back with almost no information — and remember who came through.",
+    value: "1 in 5",
+    claim: "employees worldwide feel lonely at work",
+    tieIn:
+      "Ninety minutes that genuinely break the ice — across teams, ranks and departments.",
+    source: "Gallup · 2024",
+    sourceUrl:
+      "https://www.gallup.com/workplace/645566/employees-worldwide-feel-lonely.aspx",
   },
   {
-    number: "04",
-    title: "Reading the room together",
-    description:
-      "No screens, no hiding. People who never talk in meetings end up running the table — and the team sees a different side of them.",
+    value: "2×",
+    claim: "more engaged when people have a real friend at work",
+    tieIn:
+      "Nothing bonds a team like bluffing each other — and laughing about it afterwards.",
+    source: "Gallup",
+    sourceUrl:
+      "https://www.gallup.com/workplace/236213/why-need-best-friends-work.aspx",
   },
 ];
 
@@ -53,7 +84,7 @@ export const formats: CorporateFormat[] = [
     tag: "Larger group",
     title: "Two Tables, One Room",
     description:
-      "Two parallel games of up to 25 run side by side with live hosts — a big-room energiser or all-hands finale, without losing the intimacy.",
+      "Two parallel games of up to 25 run side by side with live hosts — a big-room energiser without losing the intimacy.",
     spec: "26–50 players · 90 min",
   },
   {
@@ -80,9 +111,37 @@ export const formats: CorporateFormat[] = [
 ];
 
 /**
- * Configurator occasions. Each maps to a recommended format + duration that
- * feeds the recommendation card and pre-fills the enquiry form. No prices.
+ * "What's included" as a flowing sequence (start → finish), not a static list.
  */
+export interface IncludedStep {
+  title: string;
+  description: string;
+}
+
+export const includedFlow: IncludedStep[] = [
+  {
+    title: "A quick pre-event call",
+    description: "We tune the tone, timing and team quirks to your group.",
+  },
+  {
+    title: "We bring everything",
+    description: "Role cards, props, scripts — the lot. You bring the room.",
+  },
+  {
+    title: "A pro host runs it",
+    description: "Start to finish, scaled so 12 or 50 stay fully involved.",
+  },
+  {
+    title: "You just play",
+    description: "No prep, no admin, no running it yourself. Just join in.",
+  },
+  {
+    title: "We pack down",
+    description: "Setup and tidy-up are on us. You walk away buzzing.",
+  },
+];
+
+// Kept for the slim configurator (occasions → recommended format).
 export interface Occasion {
   value: string;
   label: string;
@@ -92,10 +151,10 @@ export interface Occasion {
 }
 
 export const occasions: Occasion[] = [
-  { value: "social", label: "Team social / after-work", format: "The Social", duration: "~75 min" },
-  { value: "awayday", label: "Away-day / off-site", format: "The Away-Day Slot", duration: "~90 min" },
-  { value: "onboarding", label: "Onboarding / new team", format: "The Ice-Breaker", duration: "~60 min" },
-  { value: "seasonal", label: "Christmas / summer party", format: "The Christmas / Summer Do", duration: "~90 min" },
+  { value: "social", label: "Team social", format: "The Social", duration: "~75 min" },
+  { value: "awayday", label: "Away-day", format: "The Away-Day Slot", duration: "~90 min" },
+  { value: "onboarding", label: "Onboarding", format: "The Ice-Breaker", duration: "~60 min" },
+  { value: "seasonal", label: "Christmas / summer", format: "The Christmas / Summer Do", duration: "~90 min" },
   { value: "conference", label: "Conference / all-hands", format: "Two Tables, One Room", duration: "~90 min" },
 ];
 
@@ -106,37 +165,6 @@ export const dateWindows: string[] = [
   "In 1–3 months",
   "In 3+ months",
   "Flexible / not sure yet",
-];
-
-export const included: string[] = [
-  "A professional host to run the whole session start to finish",
-  "All game materials — role cards, props, scripts, the lot",
-  "Setup and pack-down — you do nothing on the day",
-  "Scaled rules so 12 or 50 people stay fully involved",
-  "A pre-event call to tailor tone, timing and team quirks",
-  "Optional branded roles and a custom company twist",
-];
-
-export interface Stat {
-  value: string;
-  label: string;
-}
-
-/**
- * Stats block. These are SAFE, always-true facts — never invented figures.
- *
- * TODO (user to supply real numbers): once you have verified figures, add
- * count-based stats here, e.g.
- *   { value: "200+", label: "Players hosted" },
- *   { value: "15+",  label: "Live nights run" },
- *   { value: "4.8★", label: "Average player rating" },
- * Do NOT ship invented numbers — only add these once confirmed.
- */
-export const stats: Stat[] = [
-  { value: "2", label: "Cities — Edinburgh & Glasgow" },
-  { value: "Up to 50", label: "Players in a single session" },
-  { value: "Zero", label: "Prep needed from you on the day" },
-  { value: "No", label: "Screens, apps or laptops involved" },
 ];
 
 export const corporateFaq = [
@@ -173,19 +201,32 @@ export const corporateFaq = [
 ];
 
 /**
- * Corporate gallery photos. Uses existing web-ready event shots from /photos.
- * Swap in dedicated corporate photos (once converted from HEIC) when ready.
+ * Corporate gallery photos. Real corporate sessions first (converted from the
+ * user's uploads), then existing event shots. More can be added once the HEIC
+ * originals are exported to JPG.
  */
 export const corporatePhotos: Photo[] = [
   {
+    src: "/photos/corporate/corporate-2.jpg",
+    alt: "A corporate team around the table mid-game at a Mafia Kilty session",
+    width: 1280,
+    height: 960,
+  },
+  {
+    src: "/photos/corporate/corporate-1.jpg",
+    alt: "Colleagues laughing and deducing during a Mafia Kilty corporate game",
+    width: 960,
+    height: 1280,
+  },
+  {
     src: "/photos/DS706448.jpg",
-    alt: "A team mid-game at a Mafia Kilty social deduction session",
+    alt: "Players deep in discussion during a round of social deduction",
     width: 5272,
     height: 3810,
   },
   {
     src: "/photos/DS706527.jpg",
-    alt: "Group of colleagues after a Mafia Kilty game",
+    alt: "Group photo after a Mafia Kilty game",
     width: 1200,
     height: 800,
   },
@@ -197,19 +238,7 @@ export const corporatePhotos: Photo[] = [
   },
   {
     src: "/photos/IMG_1041.jpg",
-    alt: "Players deep in discussion during a round of social deduction",
-    width: 1200,
-    height: 900,
-  },
-  {
-    src: "/photos/DS706497.jpg",
-    alt: "Close-up of ornate masks used during the game",
-    width: 1200,
-    height: 800,
-  },
-  {
-    src: "/photos/IMG_1126.jpg",
-    alt: "Atmosphere shot from a Mafia Kilty evening",
+    alt: "Players mid-game at a Mafia Kilty night",
     width: 1200,
     height: 900,
   },

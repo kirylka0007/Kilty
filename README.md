@@ -55,29 +55,36 @@ RESEND_API_KEY=
 
 ### Corporate Page (`/corporate`)
 
-A standalone landing page targeting UK businesses for team-building / corporate
-socials. It reuses the existing design system (dark/minimal, Space Grotesk +
-Inter) with a "dossier" accent layer — a brass eyebrow colour, mono labels, and
-a redacted-headline reveal in the hero.
+A standalone, animated landing page targeting UK businesses for team-building /
+corporate socials. It uses the site's design system (dark/minimal, Space Grotesk
++ Inter) throughout — no monospace — with **Framer Motion** scroll reveals and
+interactive cards, and a brass-accented redacted-headline reveal in the hero.
 
-**Lead pitch:** the anti-AI, screen-free angle — the game exercises the human
-skills that don't automate (reading people, persuasion, building trust, spotting
-a bluff). No pricing and no testimonials are shown anywhere on the page.
+**Lead pitch:** the anti-AI, screen-free angle — give a team ninety minutes of
+reading people instead of screens. The page is deliberately short and punchy. No
+pricing and no testimonials are shown anywhere.
 
-**Section order:** hero (dual CTA) → manifesto → people-skills → formats →
-what's included → stats → photo gallery → configurator + enquiry form → FAQ →
-closing CTA.
+**Section order (and that's it):** hero (AI hook, dual CTA) → **why it works**
+(science-backed facts) → **what's included** (a flowing 5-step sequence) → event
+types (animated cards) → photos → slim configurator + enquiry form → FAQ.
 
-**Event configurator → enquiry form.** The configurator
-(`src/components/corporate/EventConfigurator.tsx`) lets a buyer set group size
-(12–50), occasion, location, and date window. Instead of a price it outputs a
-**recommendation** (table split, format, duration) — e.g. *"30 people · Away-day
-· Edinburgh → Two parallel tables of ~15 · ~90 min · The Away-Day Slot"*. The
-"Request a quote for this" button pre-fills the enquiry form with those
-selections. State is shared via `src/components/corporate/CorporateBooking.tsx`.
+**Why-it-works facts** live in `scienceFacts` in `src/data/corporate.ts`, each
+with a real cited source (Google Project Aristotle; Gallup 2024; Gallup best
+friends at work). Keep them verifiable — every fact links to its source.
+
+**Animations:** `framer-motion`. `src/components/corporate/Reveal.tsx` is a
+reusable scroll-reveal wrapper (respects `prefers-reduced-motion`); event-type
+cards and the configurator animate client-side.
+
+**Slim configurator → enquiry form.** `EventConfigurator.tsx` lets a buyer set
+group size (12–50), occasion and location, and outputs a **recommendation**
+(table split, format, duration) — e.g. *"Two tables of ~15 · The Away-Day Slot ·
+~90 min"*. "Use this in the form" pre-fills the enquiry form. State is shared via
+`src/components/corporate/CorporateBooking.tsx`.
 
 **Hard product facts baked into the copy:** max 25 players per game; two games
-run concurrently for up to 50 total; a 12–50 range is used everywhere.
+run concurrently for up to 50 total; a 12–50 range is used everywhere. Real
+headline stats: 10+ games run, 200+ people played.
 
 **Enquiry submission flow:**
 
@@ -91,13 +98,10 @@ run concurrently for up to 50 total; a 12–50 range is used everywhere.
    plus the configurator recommendation) and an **auto-reply** to the enquirer
 
 **Editing corporate content:** all copy lives in `src/data/corporate.ts`
-(formats, people-skills, FAQ, included list, configurator occasions, stats,
-gallery photos).
-
-**Stats block:** `stats` in `src/data/corporate.ts` deliberately uses only safe,
-always-true facts (no invented numbers). To add real count-based stats (players
-hosted, nights run, average rating), follow the `TODO` comment in that file —
-only add figures you can verify.
+(scienceFacts, formats, includedFlow, configurator occasions, FAQ, gallery
+photos). Corporate photos live in `public/photos/corporate/` (web-optimised via
+`sharp`); add more by exporting source images to JPG and extending
+`corporatePhotos`.
 
 ## Supabase Setup
 

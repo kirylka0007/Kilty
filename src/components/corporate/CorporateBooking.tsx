@@ -4,13 +4,12 @@ import { useState, useRef, useMemo } from "react";
 import Container from "@/components/layout/Container";
 import EventConfigurator from "./EventConfigurator";
 import CorporateEnquiryForm from "./CorporateEnquiryForm";
-import { occasions, locations, dateWindows } from "@/data/corporate";
+import { occasions, locations } from "@/data/corporate";
 
 export default function CorporateBooking() {
   const [groupSize, setGroupSize] = useState(24);
   const [occasionValue, setOccasionValue] = useState(occasions[0].value);
   const [location, setLocation] = useState(locations[0]);
-  const [dateWindow, setDateWindow] = useState(dateWindows[3]);
   const [applyKey, setApplyKey] = useState(0);
 
   const formRef = useRef<HTMLDivElement>(null);
@@ -22,7 +21,7 @@ export default function CorporateBooking() {
     () =>
       groupSize <= 25
         ? `One table of ${groupSize}`
-        : `Two parallel tables of ~${Math.ceil(groupSize / 2)}`,
+        : `Two tables of ~${Math.ceil(groupSize / 2)}`,
     [groupSize]
   );
 
@@ -32,44 +31,36 @@ export default function CorporateBooking() {
     groupSize: String(groupSize),
     city: location,
     format: occasion.format,
-    preferredDate: dateWindow,
   };
 
   function handleApply() {
     setApplyKey((k) => k + 1);
-    // Let the prefill propagate, then scroll the form into view.
     requestAnimationFrame(() => {
       formRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
     });
   }
 
   return (
-    <section id="enquire" className="scroll-mt-24 bg-black py-16 md:py-24">
+    <section id="enquire" className="scroll-mt-24 bg-off-white py-20 md:py-28">
       <Container>
         <div className="mx-auto mb-12 max-w-2xl text-center md:mb-16">
-          <p className="font-mono text-xs uppercase tracking-widest text-brass">
-            — Get a quote
-          </p>
-          <h2 className="mt-4 font-heading text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            Build it, then send it over
+          <h2 className="font-heading text-3xl font-bold tracking-tight text-black sm:text-4xl">
+            Let&rsquo;s get your team in a room
           </h2>
-          <p className="mt-4 text-lg text-grey-light">
-            Configure a rough shape for your event, then tell us about your team.
-            We&rsquo;ll come back within one working day with dates and a firm
-            quote.
+          <p className="mt-4 text-lg text-grey-mid">
+            Tell us a little about your team and we&rsquo;ll come back within one
+            working day with dates and a quote.
           </p>
         </div>
 
-        <div className="grid items-start gap-6 lg:grid-cols-2 lg:gap-8">
+        <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-8">
           <EventConfigurator
             groupSize={groupSize}
             occasionValue={occasionValue}
             location={location}
-            dateWindow={dateWindow}
             onGroupSize={setGroupSize}
             onOccasion={setOccasionValue}
             onLocation={setLocation}
-            onDateWindow={setDateWindow}
             tableSplit={tableSplit}
             formatLabel={occasion.format}
             duration={occasion.duration}

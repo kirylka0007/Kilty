@@ -1,16 +1,14 @@
 import Container from "@/components/layout/Container";
-import Eyebrow from "./Eyebrow";
 import { corporateFaq } from "@/data/corporate";
 
 export default function CorporateFAQ() {
   return (
-    <section className="bg-off-white py-16 md:py-24">
+    <section className="bg-white py-20 md:py-28">
       <Container>
         <div className="mx-auto max-w-3xl">
           <div className="mb-12 text-center md:mb-16">
-            <Eyebrow>The detail</Eyebrow>
-            <h2 className="mt-4 font-heading text-3xl font-bold tracking-tight text-black sm:text-4xl">
-              Corporate FAQ
+            <h2 className="font-heading text-3xl font-bold tracking-tight text-black sm:text-4xl">
+              Questions, answered
             </h2>
           </div>
           <div className="divide-y divide-grey-light">

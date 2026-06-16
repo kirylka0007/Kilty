@@ -16,7 +16,6 @@ interface CorporateEnquiryFormProps {
     groupSize: string;
     city: string;
     format: string;
-    preferredDate: string;
   };
   /** Human-readable recommendation passed to the server action / emails. */
   recommendation: string;
@@ -43,7 +42,7 @@ export default function CorporateEnquiryForm({
     groupSize: prefill.groupSize,
     city: prefill.city,
     format: prefill.format,
-    preferredDate: prefill.preferredDate,
+    preferredDate: "",
     budget: "",
     message: "",
     website: "",
@@ -60,7 +59,6 @@ export default function CorporateEnquiryForm({
       groupSize: prefill.groupSize,
       city: prefill.city,
       format: prefill.format,
-      preferredDate: prefill.preferredDate,
     }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [applyKey]);
