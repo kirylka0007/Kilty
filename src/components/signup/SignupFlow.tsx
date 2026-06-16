@@ -66,7 +66,8 @@ export default function SignupFlow({ events, cancelled }: SignupFlowProps) {
           {filteredEvents.length === 0 ? (
             <div className="rounded-2xl border border-grey-light bg-off-white p-8 text-center">
               <p className="text-grey-dark">
-                No upcoming events in {activeCity} yet. Check back soon!
+                We&rsquo;re taking a summer break in {activeCity} and will be
+                back with new games in autumn 2026. Check back soon!
               </p>
             </div>
           ) : (
