@@ -38,3 +38,39 @@ export interface RegistrationFormData {
   ticketQuantity: number;
   guestNames: string[];
 }
+
+export interface PeopleSkill {
+  number: string;
+  title: string;
+  description: string;
+}
+
+export interface CorporateFormat {
+  tag: string;
+  title: string;
+  description: string;
+  spec: string;
+}
+
+/** Selections from the event configurator, carried into the enquiry form. */
+export interface ConfiguratorState {
+  groupSize: number;
+  location: string;
+  format: string;
+  dateWindow: string;
+}
+
+export interface CorporateEnquiryFormData {
+  name: string;
+  company: string;
+  workEmail: string;
+  role: string;
+  groupSize: string;
+  city: string;
+  format: string;
+  preferredDate: string;
+  budget: string;
+  message: string;
+  /** Anti-spam honeypot — must stay empty for a real submission. */
+  website: string;
+}

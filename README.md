@@ -32,15 +32,16 @@ RESEND_API_KEY=
 - `/signup` — Interactive calendar with event selection, registration form, and Stripe Checkout payment
 - `/signup/success` — Post-payment confirmation page
 - `/photos` — Event photo gallery with lightbox
+- `/corporate` — Corporate / team-building landing page: anti-AI human-skills pitch, formats, event configurator, and enquiry form (no payment, no public pricing)
 - `/terms` — Terms & Conditions page (linked from registration form)
 
 ## Architecture
 
 - **Next.js 16** (App Router) with **React 19** and **TypeScript**
 - **Tailwind CSS v4** for styling
-- **Supabase** for the database (events + registrations tables, RLS policies)
+- **Supabase** for the database (events, registrations, and corporate_enquiries tables, RLS policies)
 - **Stripe Checkout** for payments with a webhook at `/api/webhooks/stripe` that inserts registrations after successful payment
-- **Resend** for transactional confirmation emails sent automatically after payment
+- **Resend** for transactional confirmation emails (registration confirmations) and corporate enquiry notifications + auto-replies
 
 ### Signup Flow
 
@@ -52,10 +53,56 @@ RESEND_API_KEY=
 6. Stripe webhook fires, inserting the registration into Supabase and sending a confirmation email via Resend
 7. User sees the success confirmation page
 
+### Corporate Page (`/corporate`)
+
+A standalone landing page targeting UK businesses for team-building / corporate
+socials. It reuses the existing design system (dark/minimal, Space Grotesk +
+Inter) with a "dossier" accent layer — a brass eyebrow colour, mono labels, and
+a redacted-headline reveal in the hero.
+
+**Lead pitch:** the anti-AI, screen-free angle — the game exercises the human
+skills that don't automate (reading people, persuasion, building trust, spotting
+a bluff). No pricing and no testimonials are shown anywhere on the page.
+
+**Section order:** hero (dual CTA) → manifesto → people-skills → formats →
+what's included → stats → photo gallery → configurator + enquiry form → FAQ →
+closing CTA.
+
+**Event configurator → enquiry form.** The configurator
+(`src/components/corporate/EventConfigurator.tsx`) lets a buyer set group size
+(12–50), occasion, location, and date window. Instead of a price it outputs a
+**recommendation** (table split, format, duration) — e.g. *"30 people · Away-day
+· Edinburgh → Two parallel tables of ~15 · ~90 min · The Away-Day Slot"*. The
+"Request a quote for this" button pre-fills the enquiry form with those
+selections. State is shared via `src/components/corporate/CorporateBooking.tsx`.
+
+**Hard product facts baked into the copy:** max 25 players per game; two games
+run concurrently for up to 50 total; a 12–50 range is used everywhere.
+
+**Enquiry submission flow:**
+
+1. User submits the form (`CorporateEnquiryForm.tsx`)
+2. Server action `submitCorporateEnquiry` (`src/actions/corporate.ts`) runs a
+   honeypot anti-spam check, validates (name, company, work email required),
+   then inserts a row into the `corporate_enquiries` table via the service-role
+   client
+3. Two emails are sent via Resend (best-effort — failures are logged, never block
+   the response): a **notification** to `info@mafiakilty.co.uk` (with all fields
+   plus the configurator recommendation) and an **auto-reply** to the enquirer
+
+**Editing corporate content:** all copy lives in `src/data/corporate.ts`
+(formats, people-skills, FAQ, included list, configurator occasions, stats,
+gallery photos).
+
+**Stats block:** `stats` in `src/data/corporate.ts` deliberately uses only safe,
+always-true facts (no invented numbers). To add real count-based stats (players
+hosted, nights run, average rating), follow the `TODO` comment in that file —
+only add figures you can verify.
+
 ## Supabase Setup
 
 1. Create a Supabase project
-2. Run the schema in `supabase-schema.sql` to create the `events` table, `registrations` table, `event_availability` view, and RLS policies
+2. Run the schema in `supabase-schema.sql` to create the `events` table, `registrations` table, `corporate_enquiries` table, `event_availability` view, and RLS policies
 3. Copy the project URL and keys into `.env.local`
 
 ### Managing Events

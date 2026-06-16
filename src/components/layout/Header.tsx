@@ -10,10 +10,11 @@ import AuthButton from "@/components/auth/AuthButton";
 const navLinks = [
   { href: "/", label: "Home" },
   { href: "/photos", label: "Photos" },
+  { href: "/corporate", label: "Corporate" },
 ];
 
 /** Pages that have a full-screen dark hero behind the header */
-const HERO_PAGES = ["/"];
+const HERO_PAGES = ["/", "/corporate"];
 
 export default function Header() {
   const pathname = usePathname();

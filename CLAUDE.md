@@ -20,6 +20,7 @@ Social deduction events site for Edinburgh & Glasgow. Users browse upcoming even
 src/
 ├── actions/
 │   ├── registration.ts            # Server action: validate → check availability → create Stripe session
+│   ├── corporate.ts               # Server action: honeypot → validate → insert corporate_enquiries → notify + auto-reply emails
 │   └── profile.ts                 # Server action: update user profile (full_name)
 ├── app/
 │   ├── layout.tsx                 # Root layout (fonts, metadata, AuthProvider wrapper)
@@ -32,6 +33,7 @@ src/
 │   ├── account/page.tsx            # User account page (view/edit profile)
 │   ├── auth/callback/route.ts     # Magic link callback (exchange code → session → redirect)
 │   ├── photos/page.tsx            # Photo gallery
+│   ├── corporate/page.tsx         # Corporate / team-building landing page (+ metadata, JSON-LD)
 │   ├── signup/page.tsx            # Signup page (fetches events, renders SignupFlow)
 │   ├── signup/success/page.tsx    # Post-payment confirmation
 │   └── terms/page.tsx             # Terms & Conditions page
@@ -40,16 +42,19 @@ src/
 │   │   ├── AuthProvider.tsx       # React context: user, profile, isLoading, signOut, refreshProfile
 │   │   └── AuthButton.tsx         # Header auth UI: sign-in dropdown / user menu
 │   ├── home/                      # Hero, WhatItIs, HowItWorks, WhereWeRun, PhotosTeaser, FAQ
+│   ├── corporate/                 # Hero, Manifesto, PeopleSkills, Formats, Included, Stats,
+│   │                              #   CorporateGallery, EventConfigurator, CorporateEnquiryForm,
+│   │                              #   CorporateBooking (state wrapper), CorporateFAQ, CtaBand, Eyebrow
 │   ├── layout/                    # Header, Footer, Container, MobileNav
 │   ├── photos/                    # Gallery, Lightbox
 │   ├── signup/                    # SignupFlow, CityTabs, EventCalendar, RegistrationForm, SpotsBadge
 │   └── ui/                        # Button, SectionHeading, ImageWithFallback
 ├── config/site.ts                 # Site name, domain, social links, city list
-├── data/                          # Static data: faq.ts, photos.ts
+├── data/                          # Static data: faq.ts, photos.ts, corporate.ts
 ├── lib/
 │   ├── stripe.ts                  # Stripe SDK client
-│   ├── email.ts                   # Resend confirmation email (sendConfirmationEmail)
-│   ├── validators.ts              # Form validation (name, email, phone)
+│   ├── email.ts                   # Resend emails: sendConfirmationEmail + corporate enquiry notify/auto-reply
+│   ├── validators.ts              # Form validation (registration + corporate enquiry)
 │   ├── metadata.ts                # Metadata builder helper
 │   ├── analytics.ts               # Analytics placeholder
 │   └── supabase/
@@ -58,8 +63,9 @@ src/
 │       ├── browser.ts             # Browser Supabase client for auth (@supabase/ssr)
 │       └── server-auth.ts         # Server cookie-aware Supabase client for auth (@supabase/ssr)
 └── types/
-    ├── index.ts                   # App types (EventWithAvailability, RegistrationFormData, Photo, FAQItem)
-    └── database.ts                # DB row types (DbEvent, DbRegistration, DbEventAvailability)
+    ├── index.ts                   # App types (EventWithAvailability, RegistrationFormData, Photo, FAQItem,
+    │                              #   CorporateEnquiryFormData, ConfiguratorState, CorporateFormat, PeopleSkill)
+    └── database.ts                # DB row types (DbEvent, DbRegistration, DbEventAvailability, DbCorporateEnquiry)
 ```
 
 Other root files: `supabase-schema.sql` (full DDL), `next.config.ts`, `postcss.config.mjs`.
@@ -101,6 +107,42 @@ SignupFlow (client component — manages step state)
       Email errors logged but never cause a non-200 response
 ```
 
+## Corporate Page (`/corporate`)
+
+A standalone landing page for UK businesses (team-building / corporate socials).
+Reuses the existing dark/minimal design system with a "dossier" accent layer:
+a brass eyebrow colour (`--color-brass` in `globals.css`), mono labels, and a
+redacted-headline reveal animation (`.redact`/`unredact` keyframes in
+`globals.css`, respects `prefers-reduced-motion`).
+
+**Positioning:** anti-AI / screen-free angle — the game trains the human skills
+that don't automate. **No prices and no testimonials anywhere.** Product facts
+baked into copy: max 25 players per game, two concurrent games for up to 50 total,
+12–50 range used throughout.
+
+**Section order:** Hero (dual CTA) → Manifesto → PeopleSkills → Formats →
+Included → Stats → CorporateGallery → CorporateBooking (configurator + form) →
+CorporateFAQ → CtaBand.
+
+**Configurator → form:** `EventConfigurator` collects group size (12–50),
+occasion, location, and date window, then outputs a **recommendation** (table
+split + format + duration) instead of a price. `CorporateBooking` holds the
+shared state, computes the recommendation string, and pre-fills
+`CorporateEnquiryForm` when the user clicks "Request a quote for this".
+
+**Enquiry flow:** `submitCorporateEnquiry` (`actions/corporate.ts`) →
+honeypot anti-spam check → `validateCorporateEnquiry` → insert into
+`corporate_enquiries` (service-role client) → `sendCorporateEnquiryNotification`
+(to `info@mafiakilty.co.uk`, includes the configurator recommendation) +
+`sendCorporateEnquiryAutoReply` (to the enquirer). Emails are best-effort
+(`Promise.allSettled`) and never block the response.
+
+**Content:** all copy in `src/data/corporate.ts` (formats, peopleSkills,
+included, occasions, locations, dateWindows, stats, corporateFaq,
+corporatePhotos). The `stats` array uses only safe always-true facts — a `TODO`
+there explains how to add verified count-based stats. No Calendly / call-booking
+yet (planned phase 2).
+
 ## Database (Supabase)
 
 Schema defined in `supabase-schema.sql`.
@@ -118,6 +160,9 @@ Schema defined in `supabase-schema.sql`.
 - `profiles` — id (FK → auth.users), full_name, email, created_at, updated_at
   - Auto-created on signup via database trigger
   - RLS: users can only read/update their own profile
+- `corporate_enquiries` — name, company, work_email, role, group_size, city, format, preferred_date, budget, message, created_at
+  - Populated by the `/corporate` enquiry form via the `submitCorporateEnquiry` server action
+  - RLS enabled, no anon access — service role key only (same model as `registrations`)
 
 **Views:**
 - `event_availability` — joins events with counted paid registrations to compute `registration_count` and `spots_remaining`
@@ -141,12 +186,13 @@ Schema defined in `supabase-schema.sql`.
 - Webhook at `/api/webhooks/stripe` verifies signature with `STRIPE_WEBHOOK_SECRET`
 - **Webhook URL must be** `https://www.mafiakilty.co.uk/api/webhooks/stripe` — the root domain redirects (307) and Stripe does not follow redirects
 
-## Resend (Confirmation Emails)
+## Resend (Emails)
 
-- `lib/email.ts` exports `sendConfirmationEmail()` — initialises Resend client inside the function (not at module level, to avoid build-time errors)
-- Called from the webhook after a successful DB insert
-- Sends from `info@mafiakilty.co.uk` to the registrant
-- Email includes: event city, date, time, venue, language, price paid, refund policy, contact info
+- `lib/email.ts` initialises the Resend client inside each function (not at module level, to avoid build-time errors). All mail is sent from `info@mafiakilty.co.uk`.
+- **`sendConfirmationEmail()`** — registration confirmation. Called from the Stripe webhook after a successful DB insert. Includes event city, date, time, venue, language, price paid, refund policy, contact info.
+- **`sendCorporateEnquiryNotification()`** — internal alert to `info@mafiakilty.co.uk` with all enquiry fields plus the configurator recommendation; `replyTo` set to the enquirer.
+- **`sendCorporateEnquiryAutoReply()`** — auto-reply to the enquirer ("we'll come back within one working day"), restates their selections, no prices.
+- Corporate emails are best-effort (`Promise.allSettled` in the server action) — failures are logged and never block the enquiry from being saved.
 - Domain `mafiakilty.co.uk` must be verified in Resend with DKIM + SPF DNS records
 
 ## User Accounts (Optional)

@@ -1,4 +1,4 @@
-import type { RegistrationFormData } from "@/types";
+import type { RegistrationFormData, CorporateEnquiryFormData } from "@/types";
 
 export interface ValidationErrors {
   fullName?: string;
@@ -6,6 +6,12 @@ export interface ValidationErrors {
   telegram?: string;
   instagram?: string;
   telephone?: string;
+}
+
+export interface CorporateValidationErrors {
+  name?: string;
+  company?: string;
+  workEmail?: string;
 }
 
 export function validateRegistration(
@@ -35,5 +41,35 @@ export function validateRegistration(
 }
 
 export function hasErrors(errors: ValidationErrors): boolean {
+  return Object.keys(errors).length > 0;
+}
+
+export function validateCorporateEnquiry(
+  data: CorporateEnquiryFormData
+): CorporateValidationErrors {
+  const errors: CorporateValidationErrors = {};
+
+  const name = data.name.trim();
+  if (!name) {
+    errors.name = "Your name is required";
+  } else if (name.length < 2) {
+    errors.name = "Name must be at least 2 characters";
+  }
+
+  if (!data.company.trim()) {
+    errors.company = "Company name is required";
+  }
+
+  const email = data.workEmail.trim().toLowerCase();
+  if (!email) {
+    errors.workEmail = "Work email is required";
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    errors.workEmail = "Please enter a valid email address";
+  }
+
+  return errors;
+}
+
+export function hasCorporateErrors(errors: CorporateValidationErrors): boolean {
   return Object.keys(errors).length > 0;
 }

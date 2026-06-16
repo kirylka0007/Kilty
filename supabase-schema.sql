@@ -131,6 +131,32 @@ left join (
 --   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
 
 -- ============================================================
+-- Corporate enquiries (from /corporate page)
+-- ============================================================
+
+create table if not exists corporate_enquiries (
+  id             uuid primary key default gen_random_uuid(),
+  name           text not null,
+  company        text not null,
+  work_email     text not null,
+  role           text,
+  group_size     integer,
+  city           text,
+  format         text,
+  preferred_date text,
+  budget         text,
+  message        text,
+  created_at     timestamptz not null default now()
+);
+
+create index if not exists idx_corporate_enquiries_created
+  on corporate_enquiries (created_at desc);
+
+-- RLS: no anon access. Inserts happen via the service-role server action only
+-- (submitCorporateEnquiry). Same model as the registrations table.
+alter table corporate_enquiries enable row level security;
+
+-- ============================================================
 -- Row Level Security
 -- ============================================================
 

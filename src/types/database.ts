@@ -27,3 +27,18 @@ export interface DbEventAvailability extends DbEvent {
   registration_count: number;
   spots_remaining: number;
 }
+
+export interface DbCorporateEnquiry {
+  id: string;
+  name: string;
+  company: string;
+  work_email: string;
+  role: string | null;
+  group_size: number | null;
+  city: string | null;
+  format: string | null;
+  preferred_date: string | null;
+  budget: string | null;
+  message: string | null;
+  created_at: string;
+}

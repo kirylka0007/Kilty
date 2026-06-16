@@ -66,6 +66,9 @@ export default function Footer() {
             <Link href="/photos" className="text-xs text-grey-mid transition-colors hover:text-white">
               Photos
             </Link>
+            <Link href="/corporate" className="text-xs text-grey-mid transition-colors hover:text-white">
+              Corporate
+            </Link>
           </div>
         </div>
       </Container>

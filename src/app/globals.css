@@ -9,6 +9,9 @@
   --color-off-white: #F5F5F7;
   --color-white: #FFFFFF;
 
+  /* Dossier accent — used sparingly for corporate-page eyebrows/labels */
+  --color-brass: #C9A24B;
+
   --font-heading: var(--font-space-grotesk);
   --font-body: var(--font-inter);
 }
@@ -51,5 +54,41 @@
   /* Dialog backdrop */
   dialog::backdrop {
     background: rgba(0, 0, 0, 0.9);
+  }
+}
+
+/*
+ * Corporate page — "redacted dossier" headline reveal.
+ * A brass bar wipes across the highlighted phrase on load, like a
+ * classified document being unredacted. Respects reduced-motion.
+ */
+.redact {
+  position: relative;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.redact > .bar {
+  position: absolute;
+  inset: 0;
+  background: var(--color-brass);
+  transform-origin: left center;
+  animation: unredact 1.1s cubic-bezier(0.7, 0, 0.2, 1) 0.5s forwards;
+}
+
+@keyframes unredact {
+  0% {
+    transform: scaleX(1);
+  }
+  100% {
+    transform: scaleX(0);
+    transform-origin: right center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .redact > .bar {
+    animation: none;
+    display: none;
   }
 }
