@@ -72,6 +72,7 @@ export const formats: CorporateFormat[] = [
     description:
       "A relaxed 60–90 min session to round off a workday or replace the same old team drinks. Drinks-optional.",
     spec: "12–25 players · 60–90 min",
+    image: "/photos/corporate/corporate-1.jpg",
   },
   {
     tag: "Off-site module",
@@ -79,6 +80,7 @@ export const formats: CorporateFormat[] = [
     description:
       "A high-energy block inside your off-site agenda — the bit people actually remember. Slots between sessions or closes the day.",
     spec: "20–50 players · 90–120 min",
+    image: "/photos/corporate/corporate-2.jpg",
   },
   {
     tag: "Larger group",
@@ -86,6 +88,7 @@ export const formats: CorporateFormat[] = [
     description:
       "Two parallel games of up to 25 run side by side with live hosts — a big-room energiser without losing the intimacy.",
     spec: "26–50 players · 90 min",
+    image: "/photos/corporate/corporate-3.jpg",
   },
   {
     tag: "Seasonal",
@@ -93,6 +96,7 @@ export const formats: CorporateFormat[] = [
     description:
       "Your annual social, minus the awkward standing-around. A built-in reason to talk, laugh and mingle across teams.",
     spec: "16–50 players · 90 min",
+    image: "/photos/corporate/corporate-6.jpg",
   },
   {
     tag: "Onboarding",
@@ -100,6 +104,7 @@ export const formats: CorporateFormat[] = [
     description:
       "New cohort or merged teams? Nothing accelerates 'knowing each other' like having to figure out who's bluffing.",
     spec: "12–30 players · 60 min",
+    image: "/photos/corporate/corporate-4.jpg",
   },
   {
     tag: "Bespoke",
@@ -107,6 +112,7 @@ export const formats: CorporateFormat[] = [
     description:
       "Custom roles themed to your company, branded reveals, or a tie-in to your values. Tell us the brief.",
     spec: "Up to 50 players · Tailored",
+    image: "/photos/corporate/corporate-5.jpg",
   },
 ];
 
@@ -234,5 +240,11 @@ export const corporatePhotos: Photo[] = [
     alt: "Players studying their cards around the table at a corporate game night",
     width: 1200,
     height: 1600,
+  },
+  {
+    src: "/photos/corporate/corporate-6.jpg",
+    alt: "A packed table of colleagues mid-game at a corporate Mafia Kilty session",
+    width: 960,
+    height: 1280,
   },
 ];

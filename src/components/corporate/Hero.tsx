@@ -22,12 +22,12 @@ export default function Hero() {
   return (
     <section className="relative flex min-h-[86vh] items-center overflow-hidden pt-28 pb-20">
       <Image
-        src="/photos/corporate/corporate-2.jpg"
-        alt="A corporate team mid-game around the table at a Mafia Kilty session"
+        src="/photos/corporate/hero.jpg"
+        alt="A corporate team laughing mid-game around the table at a Mafia Kilty session"
         fill
         className="object-cover object-center"
         priority
-        quality={85}
+        quality={88}
       />
       {/* Base scrim for mobile legibility + left-to-right gradient so the
           photo's energy shows on the right. */}

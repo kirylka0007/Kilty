@@ -50,6 +50,7 @@ export interface CorporateFormat {
   title: string;
   description: string;
   spec: string;
+  image: string;
 }
 
 /** Selections from the event configurator, carried into the enquiry form. */
