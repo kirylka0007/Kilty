@@ -9,6 +9,7 @@ import type { CorporateValidationErrors } from "@/lib/validators";
 import { submitCorporateEnquiry } from "@/actions/corporate";
 import { formats, locations } from "@/data/corporate";
 import type { CorporateEnquiryFormData } from "@/types";
+import DateRangeField from "./DateRangeField";
 
 interface CorporateEnquiryFormProps {
   /** Configurator-derived values copied into the form. */
@@ -280,13 +281,11 @@ export default function CorporateEnquiryForm({
               <label htmlFor="preferredDate" className={optionalLabelClass}>
                 Preferred date / window
               </label>
-              <input
+              <DateRangeField
                 id="preferredDate"
-                type="text"
                 value={formData.preferredDate}
-                onChange={(e) => handleChange("preferredDate", e.target.value)}
+                onChange={(v) => handleChange("preferredDate", v)}
                 className={inputClass}
-                placeholder="e.g. early December, or a date"
               />
             </div>
           </div>
