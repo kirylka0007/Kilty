@@ -3,17 +3,27 @@
 import { useState, useEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useAuth } from "@/components/auth/AuthProvider";
 
-const navLinks = [
+const baseNavLinks = [
   { href: "/", label: "Home" },
   { href: "/photos", label: "Photos" },
   { href: "/corporate", label: "Corporate" },
-  { href: "/signup", label: "Join the Next Game" },
 ];
 
 export default function MobileNav() {
   const { user, profile, signOut } = useAuth();
+  const pathname = usePathname();
+
+  /* On the corporate page the primary CTA is "Get a quote", not signup */
+  const isCorporate = pathname?.startsWith("/corporate");
+  const navLinks = [
+    ...baseNavLinks,
+    isCorporate
+      ? { href: "/corporate#enquire", label: "Get a quote" }
+      : { href: "/signup", label: "Join the Next Game" },
+  ];
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 

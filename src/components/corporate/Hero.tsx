@@ -20,76 +20,80 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative flex min-h-[92vh] items-center justify-center overflow-hidden pt-28 pb-20">
+    <section className="relative flex min-h-[86vh] items-center overflow-hidden pt-28 pb-20">
       <Image
-        src="/photos/DS706448.jpg"
-        alt="A team mid-game at a Mafia Kilty social deduction session"
+        src="/photos/corporate/corporate-2.jpg"
+        alt="A corporate team mid-game around the table at a Mafia Kilty session"
         fill
-        className="object-cover"
+        className="object-cover object-center"
         priority
         quality={85}
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/55" />
+      {/* Base scrim for mobile legibility + left-to-right gradient so the
+          photo's energy shows on the right. */}
+      <div className="absolute inset-0 bg-black/40" />
+      <div className="absolute inset-0 bg-gradient-to-r from-black via-black/75 to-transparent" />
 
-      <motion.div
-        variants={container}
-        initial="hidden"
-        animate="show"
-        className="relative z-10 mx-auto w-full max-w-[1000px] px-8 text-center sm:px-12 lg:px-16"
-      >
-        <motion.p
-          variants={item}
-          className="text-sm font-semibold uppercase tracking-[0.25em] text-brass"
-        >
-          Corporate &amp; team events
-        </motion.p>
-
-        <motion.h1
-          variants={item}
-          className="mx-auto mt-6 max-w-4xl font-heading text-4xl font-bold leading-[1.08] tracking-tight text-white sm:text-5xl md:text-6xl"
-        >
-          Your team talks to machines all year.
-          <br className="hidden sm:block" /> Give them ninety minutes of{" "}
-          <span className="redact text-brass">
-            <span className="bar" aria-hidden="true" />
-            reading people
-          </span>
-          .
-        </motion.h1>
-
-        <motion.p
-          variants={item}
-          className="mx-auto mt-7 max-w-2xl text-lg text-grey-light sm:text-xl"
-        >
-          A live, screen-free social deduction game for teams. Bluffing,
-          persuasion and figuring out who&rsquo;s lying — no laptops, no app, no
-          awkward icebreakers.
-        </motion.p>
-
+      <div className="relative z-10 mx-auto w-full max-w-[1200px] px-8 sm:px-12 lg:px-16">
         <motion.div
-          variants={item}
-          className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
+          variants={container}
+          initial="hidden"
+          animate="show"
+          className="max-w-2xl text-left"
         >
-          <Button href="#enquire" variant="primary-on-dark" size="lg" className="shadow-xl shadow-black/40">
-            Get a quote
-          </Button>
-          <Button href="#why" variant="ghost" size="lg">
-            Why it works
-          </Button>
-        </motion.div>
+          <motion.p
+            variants={item}
+            className="text-sm font-semibold uppercase tracking-[0.25em] text-brass"
+          >
+            Corporate &amp; team events
+          </motion.p>
 
-        <motion.div
-          variants={item}
-          className="mt-10 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-sm text-grey-light"
-        >
-          {trustPoints.map((point, i) => (
-            <span key={point} className="flex items-center gap-3">
-              {i > 0 && <span className="text-brass/70" aria-hidden>&middot;</span>}
-              {point}
+          <motion.h1
+            variants={item}
+            className="mt-5 font-heading text-3xl font-bold leading-[1.1] tracking-tight text-white sm:text-4xl md:text-5xl"
+          >
+            Your team talks to machines all year. Give them ninety minutes of{" "}
+            <span className="redact text-brass">
+              <span className="bar" aria-hidden="true" />
+              reading people
             </span>
-          ))}
+            .
+          </motion.h1>
+
+          <motion.p
+            variants={item}
+            className="mt-6 max-w-xl text-lg text-grey-light"
+          >
+            A live, screen-free social deduction game for teams. Bluffing,
+            persuasion and figuring out who&rsquo;s lying — no laptops, no app, no
+            awkward icebreakers.
+          </motion.p>
+
+          <motion.div
+            variants={item}
+            className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center"
+          >
+            <Button href="#enquire" variant="primary-on-dark" size="lg" className="shadow-xl shadow-black/40">
+              Get a quote
+            </Button>
+            <Button href="#why" variant="ghost" size="lg">
+              Why it works
+            </Button>
+          </motion.div>
+
+          <motion.div
+            variants={item}
+            className="mt-9 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-grey-light"
+          >
+            {trustPoints.map((point, i) => (
+              <span key={point} className="flex items-center gap-3">
+                {i > 0 && <span className="text-brass/70" aria-hidden>&middot;</span>}
+                {point}
+              </span>
+            ))}
+          </motion.div>
         </motion.div>
-      </motion.div>
+      </div>
     </section>
   );
 }

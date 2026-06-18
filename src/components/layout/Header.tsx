@@ -33,6 +33,12 @@ export default function Header() {
   /* On pages without a dark hero, always show the dark header background */
   const showDarkBg = scrolled || !hasHero;
 
+  /* On the corporate page the primary CTA is "Get a quote", not signup */
+  const isCorporate = pathname?.startsWith("/corporate");
+  const cta = isCorporate
+    ? { href: "/corporate#enquire", label: "Get a quote" }
+    : { href: "/signup", label: "Join the Next Game" };
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -68,10 +74,10 @@ export default function Header() {
           ))}
           <AuthButton />
           <Link
-            href="/signup"
+            href={cta.href}
             className="shrink-0 whitespace-nowrap rounded-xl bg-white px-6 py-3 text-sm font-semibold text-black transition-colors hover:bg-transparent hover:text-white hover:ring-2 hover:ring-white"
           >
-            Join the Next Game
+            {cta.label}
           </Link>
         </div>
 

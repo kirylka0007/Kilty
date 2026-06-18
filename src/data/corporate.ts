@@ -201,45 +201,38 @@ export const corporateFaq = [
 ];
 
 /**
- * Corporate gallery photos. Real corporate sessions first (converted from the
- * user's uploads), then existing event shots. More can be added once the HEIC
- * originals are exported to JPG.
+ * Corporate gallery photos — real corporate sessions only (no public-night or
+ * stock shots). Converted/optimised from the uploads in `Photos - Corporate`.
  */
 export const corporatePhotos: Photo[] = [
   {
+    src: "/photos/corporate/corporate-3.jpg",
+    alt: "A corporate team laughing across the table mid-game with player number cards",
+    width: 1200,
+    height: 1600,
+  },
+  {
     src: "/photos/corporate/corporate-2.jpg",
-    alt: "A corporate team around the table mid-game at a Mafia Kilty session",
+    alt: "A team gathered around a long table during a corporate Mafia Kilty session",
     width: 1280,
     height: 960,
   },
   {
+    src: "/photos/corporate/corporate-5.jpg",
+    alt: "A host running a Mafia Kilty game for a corporate team around the table",
+    width: 1200,
+    height: 1600,
+  },
+  {
     src: "/photos/corporate/corporate-1.jpg",
-    alt: "Colleagues laughing and deducing during a Mafia Kilty corporate game",
+    alt: "Colleagues deducing and laughing during a corporate Mafia Kilty game",
     width: 960,
     height: 1280,
   },
   {
-    src: "/photos/DS706448.jpg",
-    alt: "Players deep in discussion during a round of social deduction",
-    width: 5272,
-    height: 3810,
-  },
-  {
-    src: "/photos/DS706527.jpg",
-    alt: "Group photo after a Mafia Kilty game",
+    src: "/photos/corporate/corporate-4.jpg",
+    alt: "Players studying their cards around the table at a corporate game night",
     width: 1200,
-    height: 800,
-  },
-  {
-    src: "/photos/DS706424.jpg",
-    alt: "Host wearing a dramatic mask running a Mafia Kilty session",
-    width: 1200,
-    height: 800,
-  },
-  {
-    src: "/photos/IMG_1041.jpg",
-    alt: "Players mid-game at a Mafia Kilty night",
-    width: 1200,
-    height: 900,
+    height: 1600,
   },
 ];
