@@ -8,14 +8,14 @@ export default function WhyItWorks() {
       <Container>
         <Reveal className="mx-auto max-w-2xl text-center">
           <h2 className="font-heading text-3xl font-bold tracking-tight text-black sm:text-4xl md:text-5xl">
-            It&rsquo;s not just a laugh.
+            It&rsquo;s not just a laugh
             <br />
-            <span className="text-grey-mid">(Though it&rsquo;s definitely that too.)</span>
+            <span className="text-grey-mid">(though it&rsquo;s definitely that too)</span>
           </h2>
           <p className="mx-auto mt-5 max-w-xl text-lg text-grey-dark">
-            Social deduction quietly trains the things that actually make teams
-            work — connection, trust, and the confidence to speak up. The
-            research backs it.
+            Social deduction quietly trains the things that make teams work:
+            connection, trust and the confidence to speak up, and the research
+            backs it up.
           </p>
         </Reveal>
 

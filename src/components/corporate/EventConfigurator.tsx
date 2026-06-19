@@ -76,7 +76,7 @@ export default function EventConfigurator({
         Build a rough shape
       </h3>
       <p className="mt-1 text-sm text-grey-mid">
-        Two taps and a drag — we&rsquo;ll suggest a format and pre-fill the form.
+        Two taps and a drag, and we&rsquo;ll suggest a format and pre-fill the form.
       </p>
 
       <div className="mt-6 space-y-6">

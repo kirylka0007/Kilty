@@ -120,7 +120,7 @@ export default function CorporateEnquiryForm({
           Enquiry sent
         </h3>
         <p className="mt-3 max-w-sm text-sm leading-relaxed text-grey-dark">
-          Thanks — we&rsquo;ve got it. We&rsquo;ll come back to you within one
+          Thanks, we&rsquo;ve got it. We&rsquo;ll come back to you within one
           working day with dates and a quote. Keep an eye on your inbox for a
           confirmation email.
         </p>

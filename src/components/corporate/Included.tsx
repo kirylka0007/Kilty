@@ -9,11 +9,11 @@ export default function Included() {
       <Container>
         <Reveal className="mx-auto max-w-2xl text-center">
           <h2 className="font-heading text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            Everything but the room.
+            Everything but the room
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-lg text-grey-light">
-            You pick the people and the place. We handle the rest — start to
-            finish — so on the day, you just turn up and play.
+            You pick the people and the place, and we handle the rest from start
+            to finish, so on the day you just turn up and play.
           </p>
         </Reveal>
 

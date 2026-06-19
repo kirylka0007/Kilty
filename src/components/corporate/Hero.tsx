@@ -57,7 +57,6 @@ export default function Hero() {
               <span className="bar" aria-hidden="true" />
               reading people
             </span>
-            .
           </motion.h1>
 
           <motion.p
@@ -65,8 +64,8 @@ export default function Hero() {
             className="mt-6 max-w-xl text-lg text-grey-light"
           >
             A live, screen-free social deduction game for teams. Bluffing,
-            persuasion and figuring out who&rsquo;s lying — no laptops, no app, no
-            awkward icebreakers.
+            persuasion and working out who&rsquo;s lying, with no laptops, no app
+            and no awkward icebreakers.
           </motion.p>
 
           <motion.div

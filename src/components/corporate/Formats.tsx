@@ -16,11 +16,11 @@ export default function Formats() {
       <Container>
         <div className="mx-auto mb-12 max-w-2xl text-center md:mb-16">
           <h2 className="font-heading text-3xl font-bold tracking-tight text-black sm:text-4xl">
-            One game, shaped to your day.
+            One game, shaped to your day
           </h2>
           <p className="mt-4 text-lg text-grey-mid">
-            Tap a format — up to 25 per game, two games side by side for bigger
-            groups, so up to 50 can play at once.
+            Pick a format to explore it. Up to 25 per game, with two games side
+            by side for bigger groups, so up to 50 can play at once.
           </p>
         </div>
 
@@ -69,7 +69,7 @@ export default function Formats() {
                 <div className="relative aspect-[16/10] w-full">
                   <Image
                     src={active.image}
-                    alt={`${active.title} — a Mafia Kilty corporate game`}
+                    alt={`${active.title}, a Mafia Kilty corporate game`}
                     fill
                     className="object-cover"
                     sizes="(max-width: 1024px) 100vw, 60vw"

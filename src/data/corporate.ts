@@ -29,18 +29,18 @@ export interface ScienceFact {
 export const scienceFacts: ScienceFact[] = [
   {
     value: "#1",
-    claim: "predictor of team performance — ahead of talent or seniority",
+    claim: "predictor of team performance, ahead of talent or seniority",
     tieIn:
-      "It's whether people feel safe to speak up. Our game runs on exactly that: reading people, speaking up, being wrong out loud — safely.",
+      "It comes down to whether people feel safe to speak up, which is exactly what the game runs on: reading the room, finding your voice and being wrong out loud without anyone minding",
     source: "Google · Project Aristotle (180+ teams)",
     sourceUrl:
       "https://rework.withgoogle.com/intl/en/guides/understanding-team-effectiveness",
   },
   {
     value: "25% vs 16%",
-    claim: "of remote workers feel lonely daily — versus people in the same room",
+    claim: "of remote workers feel lonely daily, versus people in the same room",
     tieIn:
-      "No screens, no call grid. Just your team, in one room, properly switched on.",
+      "No screens and no call grid, just your team in one room and properly switched on",
     source: "Gallup · State of the Global Workplace, 2024",
     sourceUrl:
       "https://www.gallup.com/workplace/645566/employees-worldwide-feel-lonely.aspx",
@@ -49,7 +49,7 @@ export const scienceFacts: ScienceFact[] = [
     value: "1 in 5",
     claim: "employees worldwide feel lonely at work",
     tieIn:
-      "Ninety minutes that genuinely break the ice — across teams, ranks and departments.",
+      "Ninety minutes that genuinely break the ice across teams, ranks and departments",
     source: "Gallup · 2024",
     sourceUrl:
       "https://www.gallup.com/workplace/645566/employees-worldwide-feel-lonely.aspx",
@@ -58,7 +58,7 @@ export const scienceFacts: ScienceFact[] = [
     value: "2×",
     claim: "more engaged when people have a real friend at work",
     tieIn:
-      "Nothing bonds a team like bluffing each other — and laughing about it afterwards.",
+      "Nothing bonds a team like bluffing each other, then laughing about it afterwards",
     source: "Gallup",
     sourceUrl:
       "https://www.gallup.com/workplace/236213/why-need-best-friends-work.aspx",
@@ -78,7 +78,7 @@ export const formats: CorporateFormat[] = [
     tag: "Off-site module",
     title: "The Away-Day Slot",
     description:
-      "A high-energy block inside your off-site agenda — the bit people actually remember. Slots between sessions or closes the day.",
+      "A high-energy block inside your off-site agenda, the bit people actually remember. Slots between sessions or closes the day out.",
     spec: "20–50 players · 90–120 min",
     image: "/photos/corporate/corporate-2.jpg",
   },
@@ -86,7 +86,7 @@ export const formats: CorporateFormat[] = [
     tag: "Larger group",
     title: "Two Tables, One Room",
     description:
-      "Two parallel games of up to 25 run side by side with live hosts — a big-room energiser without losing the intimacy.",
+      "Two parallel games of up to 25 run side by side with live hosts, for a big-room energiser that keeps the intimacy.",
     spec: "26–50 players · 90 min",
     image: "/photos/corporate/corporate-3.jpg",
   },
@@ -131,7 +131,7 @@ export const includedFlow: IncludedStep[] = [
   },
   {
     title: "We bring everything",
-    description: "Role cards, props, scripts — the lot. You bring the room.",
+    description: "Role cards, props, scripts, the lot. You bring the room.",
   },
   {
     title: "A pro host runs it",
@@ -182,22 +182,22 @@ export const corporateFaq = [
   {
     question: "How much space and kit do we need?",
     answer:
-      "Just a room where everyone can sit or stand in a rough circle and hear each other — a meeting room, a private function space, or a corner of your office all work. We bring everything else. For two parallel tables we'll need enough room for two groups.",
+      "Just a room where everyone can sit or stand in a rough circle and hear each other. A meeting room, a private function space or a corner of your office all work, and we bring everything else. For two parallel tables we'll need enough room for two groups.",
   },
   {
-    question: "Is it inclusive — does everyone have to perform?",
+    question: "Is it inclusive, and does everyone have to perform?",
     answer:
       "No one is ever put on the spot. The game naturally includes quieter people without forcing anyone to 'perform'. You can be fully involved by listening, voting and reading the room. Our hosts keep the tone warm and welcoming throughout.",
   },
   {
     question: "Can it be alcohol-free or run during the day?",
     answer:
-      "Absolutely. The game works just as well as a daytime team session as it does an evening social — no alcohol required. We regularly run lunch-and-learn slots, away-day blocks and onboarding sessions in working hours.",
+      "Absolutely. The game works just as well as a daytime team session as it does an evening social, with no alcohol required. We regularly run lunch-and-learn slots, away-day blocks and onboarding sessions in working hours.",
   },
   {
     question: "What lead time do you need?",
     answer:
-      "The sooner the better for locking in a date, especially around Christmas and summer. As a rule of thumb, give us a couple of weeks where you can — but get in touch even at short notice and we'll do our best to make it work.",
+      "The sooner the better for locking in a date, especially around Christmas and summer. As a rule of thumb, give us a couple of weeks where you can, but get in touch even at short notice and we'll do our best to make it work.",
   },
   {
     question: "Can you handle accessibility and dietary needs?",
